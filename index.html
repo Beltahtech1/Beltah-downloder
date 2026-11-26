@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#090d18"><meta name="description" content="BELTAH DOWNLOADER — a clean, fast media link and file downloader by Beltah Tech Team.">
+  <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json"><link rel="icon" href="/icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css"><title>BELTAH DOWNLOADER</title>
+</head>
+<body>
+<div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+<header class="topbar">
+  <button id="installBtn" class="install-btn" type="button"><span>↧</span> Install Downloader</button>
+  <a class="brand-mini" href="/" aria-label="Beltah Downloader home"><img src="/icons/icon.svg" alt=""><span>BELTAH <b>DOWNLOADER</b></span></a>
+  <button id="adminOpen" class="icon-btn" aria-label="Open settings" title="Admin settings">⚙</button>
+</header>
+<main class="shell">
+  <section class="hero">
+    <div class="eyebrow"><span class="live-dot"></span> MULTI-PLATFORM DOWNLOAD WORKSPACE</div>
+    <h1>Save what matters.<br><span>Keep it moving.</span></h1>
+    <p class="hero-copy">A simple workspace for downloading direct media files and connecting approved media providers.</p>
+    <div class="platforms" aria-label="Supported link types">
+      <span>▶ YouTube*</span><span>◎ Instagram*</span><span>♪ TikTok*</span><span>𝕏 X*</span><span>↗ Direct links</span>
+    </div>
+  </section>
+  <section class="workspace glass">
+    <div class="workspace-head"><div><div class="section-kicker">NEW DOWNLOAD</div><h2>Paste a media link</h2></div><div id="platformBadge" class="platform-badge">Detecting platform</div></div>
+    <form id="downloadForm">
+      <label class="sr-only" for="mediaUrl">Media or direct file URL</label>
+      <div class="url-field"><span class="link-icon">↗</span><input id="mediaUrl" type="url" inputmode="url" placeholder="Paste a video, audio or direct file URL…" autocomplete="url" required><button id="clearUrl" class="clear-btn" type="button" aria-label="Clear URL">×</button></div>
+      <div class="form-row"><div class="select-wrap"><label for="formatSelect">FORMAT</label><select id="formatSelect"><option value="auto">Auto detect</option><option value="video">Video / MP4</option><option value="audio">Audio / MP3</option><option value="original">Original file</option></select></div><button id="startBtn" class="primary-btn" type="submit"><span>Find media</span><b>→</b></button></div>
+    </form>
+    <div class="notice"><span>ⓘ</span><p>Only download files you own or have permission to save. Platform extraction requires a compatible, authorized resolver service. Direct file links can be downloaded here.</p></div>
+    <div id="statusArea" class="status-area" aria-live="polite"><div class="idle-mark">✳</div><span>Ready when you are</span></div>
+    <div id="results" class="results hidden"></div>
+  </section>
+  <section class="below-grid">
+    <div class="panel glass"><div class="panel-heading"><div><div class="section-kicker">SESSION</div><h3>Download queue</h3></div><span id="queueCount" class="count">0</span></div><div id="queueList" class="empty-state">Your downloads will appear here.</div></div>
+    <div class="panel glass"><div class="panel-heading"><div><div class="section-kicker">RECENT ACTIVITY</div><h3>Search history</h3></div><button id="clearHistory" class="text-btn" type="button">Clear</button></div><div id="historyList" class="empty-state">No recent links yet.</div></div>
+  </section>
+  <p class="footnote">* Platform support depends on provider authorization and resolver configuration. BELTAH DOWNLOADER does not bypass DRM, access controls, or platform restrictions.</p>
+</main>
+<footer><span>© <span id="year"></span> BELTAH TECH</span><span>Powered by <b>Beltah Tech Team</b></span></footer>
+<div id="toast" class="toast" role="status"></div>
+<dialog id="adminDialog" class="admin-dialog glass">
+  <form method="dialog" class="dialog-head"><div><div class="section-kicker">CONTROL CENTER</div><h2>Admin configuration</h2></div><button class="icon-btn" aria-label="Close">×</button></form>
+  <form id="adminLogin" class="admin-form"><p>Authenticate to manage provider settings. The passcode is checked server-side and must be configured in Vercel.</p><label for="adminPass">ADMIN PASSCODE</label><input id="adminPass" type="password" placeholder="Enter admin passcode" required><button class="primary-btn" type="submit">Unlock settings →</button><div id="adminError" class="error-text"></div></form>
+  <div id="adminSettings" class="admin-form hidden"><label for="resolverUrl">RESOLVER SERVICE BASE URL</label><input id="resolverUrl" type="url" placeholder="https://your-authorized-resolver.example"><label for="resolverPath">RESOLVER PATH</label><input id="resolverPath" type="text" value="/api/resolve"><p class="muted">Provider APIs vary. Confirm the upstream request and response contract before enabling a resolver. Values are stored in this browser only; do not enter API secrets here.</p><button id="saveConfig" class="primary-btn" type="button">Save configuration</button><button id="adminLogout" class="text-btn" type="button">Lock settings</button></div>
+</dialog>
+<script src="/app.js" defer></script>
+</body></html>
