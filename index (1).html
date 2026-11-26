@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090d16">
+  <meta name="description" content="BELTAH DOWNLOADER by Beltah Tech — a multi-format direct media downloader with live transfer progress, queue and history.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>BELTAH DOWNLOADER — Media Studio</title>
+  <style>
+    body {
+      background-color: #080c16;
+      color: #e2e8f0;
+      font-family: 'Plus Jakarta Sans', 'DM Sans', sans-serif;
+    }
+    .studio-card {
+      background: linear-gradient(180deg, rgba(16, 22, 36, 0.96) 0%, rgba(12, 17, 29, 0.98) 100%);
+      border: 1px solid rgba(51, 65, 85, 0.45);
+      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.7);
+    }
+    .stat-pill {
+      background: rgba(19, 27, 46, 0.85);
+      border: 1px solid rgba(56, 72, 102, 0.4);
+    }
+    .platform-badge {
+      background: rgba(18, 25, 42, 0.9);
+      border: 1px solid rgba(51, 65, 85, 0.55);
+      transition: all 0.2s ease;
+    }
+    .platform-badge:hover {
+      border-color: rgba(56, 189, 248, 0.5);
+      background: rgba(24, 34, 56, 0.95);
+    }
+    .cta-gradient {
+      background: linear-gradient(90deg, #38bdf8 0%, #3b82f6 50%, #6366f1 100%);
+    }
+    .cta-gradient:hover {
+      background: linear-gradient(90deg, #7dd3fc 0%, #60a5fa 50%, #818cf8 100%);
+    }
+    .install-gradient {
+      background: linear-gradient(90deg, #38bdf8 0%, #6366f1 100%);
+    }
+    .title-gradient {
+      background: linear-gradient(90deg, #38bdf8 0%, #2dd4bf 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen selection:bg-sky-500/30 selection:text-sky-200">
+  <div id="app" class="max-w-3xl mx-auto px-4 sm:px-6 py-4 space-y-5">
+    
+    <!-- Top Bar matching screenshot -->
+    <header class="flex items-center justify-between gap-3 pt-1">
+      <div class="flex items-center gap-2.5">
+        <button id="openInstallBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2 rounded-full install-gradient text-white text-xs sm:text-sm font-bold shadow-lg shadow-sky-500/20 hover:opacity-95 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+          </svg>
+          <span>Install Downloader</span>
+        </button>
+        <button id="installBtn" type="button" class="hidden px-3 py-2 rounded-xl bg-slate-800/80 border border-slate-700 text-xs font-semibold text-slate-200">Install App</button>
+        <span id="netStatusBadge" class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/25">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+          <span id="netStatusText">Online</span>
+        </span>
+      </div>
+      <button id="openSettingsBtn" type="button" title="Provider status" aria-label="Provider status" class="w-10 h-10 rounded-xl bg-[#131a2b] hover:bg-[#1a2338] border border-slate-700/60 flex items-center justify-center text-slate-300 transition">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- Main Studio Hero Card -->
+    <section class="studio-card glass rounded-[26px] p-5 sm:p-7 relative overflow-hidden">
+      <!-- Top Brand Row -->
+      <div class="flex items-start gap-4">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#101829] border border-sky-400/35 shadow-[0_0_25px_rgba(56,189,248,0.18)] flex items-center justify-center relative shrink-0">
+          <span class="text-2xl sm:text-3xl font-extrabold text-sky-300 tracking-tighter">B</span>
+          <span class="absolute bottom-2 right-2 w-4 h-4 rounded-full bg-sky-400 text-[#080c16] flex items-center justify-center text-[10px] font-black shadow">↓</span>
+        </div>
+        
+        <div class="space-y-2 flex-1 min-w-0">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-400/20 text-[11px] font-semibold text-sky-300">
+            <span>Powered by Beltah Tech Team</span>
+            <span class="text-sky-400/60">•</span>
+            <span>Fast Media Studio</span>
+          </div>
+          
+          <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight leading-tight">
+            <span class="text-white">BELTAH</span> <span class="title-gradient">DOWNLOADER</span>
+          </h1>
+          
+          <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+            Search YouTube videos or paste links from YouTube, TikTok, Instagram, Facebook, X, Reddit, Pinterest, and SoundCloud. Preview quality options, monitor live download progress, and manage your queue.
+          </p>
+        </div>
+      </div>
+
+      <!-- 3 Stat Boxes -->
+      <div class="grid grid-cols-3 gap-2.5 sm:gap-3 mt-6">
+        <div class="stat-pill rounded-2xl py-3 px-2 sm:px-4 text-center">
+          <div class="text-[11px] text-slate-400 font-medium">MP3 Audio</div>
+          <div class="text-xs sm:text-sm font-bold text-teal-400 mt-0.5">128–320k</div>
+        </div>
+        <div class="stat-pill rounded-2xl py-3 px-2 sm:px-4 text-center">
+          <div class="text-[11px] text-slate-400 font-medium">MP4 Video</div>
+          <div class="text-xs sm:text-sm font-bold text-sky-400 mt-0.5">360–1080p</div>
+        </div>
+        <div class="stat-pill rounded-2xl py-3 px-2 sm:px-4 text-center">
+          <div class="text-[11px] text-slate-400 font-medium">Platforms</div>
+          <div class="text-xs sm:text-sm font-bold text-indigo-300 mt-0.5">8+ Sources</div>
+        </div>
+      </div>
+
+      <!-- Search & Action Form -->
+      <form id="searchForm" class="mt-5 space-y-3">
+        <div class="relative flex items-center rounded-2xl bg-[#090d16] border border-slate-700/70 focus-within:border-sky-400/80 transition px-3 py-1.5">
+          <label class="sr-only" for="queryInput">Search YouTube or paste a media URL</label>
+          <input id="queryInput" type="text" inputmode="url" autocomplete="url" placeholder="Search YouTube (e.g. faded) or paste a link..." class="w-full py-2 px-1.5 bg-transparent focus:outline-none text-xs sm:text-sm text-white placeholder-slate-500">
+          
+          <div class="flex items-center gap-1.5 shrink-0 ml-1">
+            <button id="clearUrl" type="button" aria-label="Clear input" class="hidden px-1.5 py-1 text-slate-400 hover:text-white text-base">×</button>
+            <span id="detectedPlatformBadge" class="hidden">Waiting</span>
+            <button id="pasteBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#1a2234] hover:bg-[#232d45] border border-slate-700/70 text-xs font-semibold text-slate-200 transition">Paste</button>
+            <button id="pasteGoBtn" type="button" class="px-3 py-1.5 rounded-xl bg-[#1a2542] hover:bg-[#223156] border border-indigo-400/30 text-xs font-semibold text-sky-300 transition">Paste &amp; Go</button>
+          </div>
+        </div>
+
+        <button id="searchSubmitBtn" type="submit" class="w-full py-3.5 px-6 rounded-2xl cta-gradient text-white font-bold text-sm sm:text-base shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2 transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>Search / Fetch</span>
+        </button>
+      </form>
+
+      <!-- Mode & Shortcuts Bar -->
+      <div class="mt-4 space-y-2 text-xs">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-slate-300 font-semibold">Mode:</span>
+          <span class="px-2.5 py-1 rounded-lg bg-[#152036] border border-sky-500/20 text-sky-300 font-medium text-[11px]">YouTube Search &amp; Multi-Link Ready</span>
+        </div>
+        <div class="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
+          <span>Press</span>
+          <kbd class="px-1.5 py-0.5 rounded bg-[#141b2d] border border-slate-700/70 text-slate-300 font-mono text-[10px]">/</kbd>
+          <span>to focus</span>
+          <span class="ml-1">Press</span>
+          <kbd class="px-1.5 py-0.5 rounded bg-[#141b2d] border border-slate-700/70 text-slate-300 font-mono text-[10px]">Esc</kbd>
+          <span>to close panels</span>
+        </div>
+      </div>
+
+      <!-- Supported Platforms Grid -->
+      <div class="mt-5 pt-4 border-t border-slate-800/80">
+        <div class="text-[10px] uppercase tracking-[0.14em] text-slate-400 font-bold mb-3">SUPPORTED PLATFORMS (CLICK A BADGE TO SAMPLE OR FILTER)</div>
+        <div class="flex flex-wrap gap-2 text-xs">
+          <button type="button" data-platform="youtube" class="platform-badge inline-flex items-center gap-2 px-3 py-2 rounded-xl text-slate-200 font-medium">
+            <span class="w-4 h-3 rounded-[3px] bg-red-600 flex items-center justify-center text-[8px] text-white">▶</span>
+            <span>YouTube</span>
+          </button>
+          <button type="button" data-platform="tiktok" class="platform-badge inline-flex items-center gap-2 px-3 py-2 rounded-xl text-slate-200 font-medium">
+            <span class="text-cyan-300 font-bold text-sm leading-none">♪</span>
+            <span>TikTok</span>
+          </button>
+          <button type="button" data-platform="instagram" class="platform-badge inline-flex items-center gap-2 px-3 py-2 rounded-xl text-slate-200 font-medium">
+            <span class="w-3.5 h-3.5 rounded-[4px] border border-pink-400 flex items-center justify-center text-[8px] text-pink-400">◎</span>
+            <span>Instagram</span>
+          </button>
+          <button type="button" data-platform="facebook" class="platform-badge inline-flex items-center gap-2 px-3 py-2 rounded-xl text-slate-200 font-medium">
+            <span class="text-blue-400 font-extrabold text-sm leading-none">f</span>
+            <span>Facebook</span>
+          </button>
+          <button type="button" data-platform="twitter" class="platform-badge inline-flex items-center gap-2 px-3 py-2 rounded-xl text-slate-200 font-medium">
+            <span class="text-slate-100 font-bold text-xs leading-none">𝕏</span>
+            <span>X (Twitter)</span>
+          </button>
+          <button type="button" data-platform="reddit" class="platform-badge inline-flex items-center gap-2 px-3 py-2 rounded-xl text-slate-200 font-medium">
+            <span class="w-3.5 h-3.5 rounded-full bg-orange-500/20 border border-orange-500 text-orange-400 flex items-center justify-center text-[9px] font-bold">r</span>
+            <span>Reddit</span>
+          </button>
+          <button type="button" data-platform="pinterest" class="platform-badge inline-flex items-center gap-2 px-3 py-2 rounded-xl text-slate-200 font-medium">
+            <span class="w-3.5 h-3.5 rounded-full bg-rose-500/20 border border-rose-500 text-rose-400 flex items-center justify-center text-[9px] font-bold">P</span>
+            <span>Pinterest</span>
+          </button>
+          <button type="button" data-platform="soundcloud" class="platform-badge inline-flex items-center gap-2 px-3 py-2 rounded-xl text-slate-200 font-medium">
+            <span class="text-amber-400 text-xs leading-none">☁</span>
+            <span>SoundCloud</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Recent Searches & Links Footer inside Hero Card -->
+      <div class="mt-5 pt-4 border-t border-slate-800/80 space-y-2.5">
+        <div class="flex items-center justify-between text-xs">
+          <span class="text-slate-300 font-semibold">Recent Searches &amp; Links</span>
+          <button id="clearHistoryBtn" type="button" class="text-rose-400 hover:text-rose-300 font-medium">Clear History</button>
+        </div>
+        <div id="historyChips" class="flex flex-wrap items-center gap-2">
+          <span class="px-3 py-1 rounded-full bg-[#131b2e] border border-slate-700/70 text-xs text-slate-300">Wakadinall</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Active Transfer Progress -->
+    <section id="progressSection" class="studio-card glass rounded-2xl p-5 hidden space-y-3">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <span class="text-xs uppercase tracking-wider text-sky-400 font-semibold">Active Transfer</span>
+          <h3 id="progressTitle" class="text-base font-bold text-white">Preparing download…</h3>
+        </div>
+        <div class="flex items-center gap-3 text-xs text-slate-300">
+          <span id="progressStats">0% · 0 MB · 0 MB/s · ETA —</span>
+          <button id="cancelDownloadBtn" type="button" class="px-3 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/35 text-rose-300">Cancel</button>
+        </div>
+      </div>
+      <div class="w-full h-3 rounded-full bg-slate-800 overflow-hidden">
+        <div id="progressBar" class="h-full w-0 bg-gradient-to-r from-sky-400 to-indigo-500 transition-all duration-150"></div>
+      </div>
+    </section>
+
+    <section id="statusPanel" class="hidden" aria-live="polite"></section>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="space-y-4 hidden">
+      <div class="studio-card glass rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-1.5 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+          <button type="button" data-format-filter="all" class="format-tab active">All</button>
+          <button type="button" data-format-filter="mp4" class="format-tab">MP4</button>
+          <button type="button" data-format-filter="mp3" class="format-tab">MP3</button>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <input id="resultFilterInput" type="text" placeholder="Filter titles…" class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700 text-xs text-white">
+          <select id="resultSortSelect" class="px-3 py-1.5 rounded-xl bg-slate-900/90 border border-slate-700 text-xs text-slate-200">
+            <option value="default">Sort: Recent</option>
+            <option value="title-asc">Title (A–Z)</option>
+            <option value="title-desc">Title (Z–A)</option>
+          </select>
+          <button id="toggleDensityBtn" type="button" class="px-3 py-1.5 rounded-xl bg-slate-800 border border-slate-700 text-xs text-slate-200">View: Detailed</button>
+        </div>
+      </div>
+      <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <!-- Download Queue & Session Log Card matching screenshot -->
+    <section class="space-y-4" aria-label="Session activity">
+      <div class="studio-card glass rounded-[24px] p-5 sm:p-6 space-y-4">
+        <div class="space-y-2.5">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-white">Download Queue &amp; Session Log <span class="text-xs font-normal text-slate-400">(<span id="queueCount">0</span>)</span></h2>
+            <p class="text-xs text-slate-400 mt-0.5">Tracks active, completed, cancelled, and failed downloads in this session.</p>
+          </div>
+          <div>
+            <button id="clearFinishedQueueBtn" type="button" class="px-3.5 py-1.5 rounded-xl bg-[#182034] hover:bg-[#202b45] border border-slate-700/70 text-xs font-semibold text-slate-200 transition">Clear Finished</button>
+          </div>
+        </div>
+
+        <div id="queueList" class="py-6 text-center text-xs text-slate-500 leading-relaxed border-t border-slate-800/70">
+          No downloads in the session queue yet. Select any media item and choose an MP4 or MP3 option above.
+        </div>
+      </div>
+
+      <!-- Device Recent Links Panel -->
+      <div class="studio-card glass rounded-2xl p-5 space-y-3 hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[11px] uppercase tracking-wider text-indigo-300 font-semibold block">On This Device</span>
+            <h2 class="text-base font-bold text-white">Recent Links</h2>
+          </div>
+          <button id="clearHistory" type="button" class="text-xs text-slate-400 hover:text-rose-300">Clear history</button>
+        </div>
+        <div id="historyList" class="space-y-2 text-xs text-slate-400">No recent links yet.</div>
+      </div>
+    </section>
+
+    <footer class="studio-card glass rounded-2xl px-5 py-4 text-xs text-slate-400 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div>© <span id="year"></span> <strong class="text-slate-200">BELTAH DOWNLOADER</strong> · Beltah Tech</div>
+      <div>Only download media you own or are authorised to access.</div>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+  <div id="installDrawerBackdrop" class="fixed inset-0 bg-black/70 z-40 hidden"></div>
+  <aside id="installDrawer" class="fixed top-0 left-0 h-full w-full max-w-md glass z-50 p-6 overflow-y-auto -translate-x-full transition-transform duration-200 space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div>
+        <span class="text-[11px] uppercase tracking-wider text-sky-400 font-semibold">App &amp; Device Setup</span>
+        <h2 class="text-lg font-bold text-white">Install BELTAH DOWNLOADER</h2>
+      </div>
+      <button id="closeInstallBtn" type="button" class="p-2 rounded-xl bg-slate-800 text-slate-300">✕</button>
+    </div>
+    <div id="detectedOsBanner" class="p-3.5 rounded-2xl bg-sky-500/10 border border-sky-400/30 text-xs text-sky-200">Detecting device…</div>
+    <button id="pwaInstallTriggerBtn" type="button" class="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-500 text-slate-950 font-bold text-sm">Install Web App (PWA)</button>
+    <div class="space-y-3 text-xs text-slate-300">
+      <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1.5"><div class="font-bold text-white text-sm">Android</div><p>Open in Chrome, tap ⋮, then choose Install app or Add to Home screen.</p></div>
+      <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1.5"><div class="font-bold text-white text-sm">iPhone / iPad</div><p>Open in Safari, tap Share, then choose Add to Home Screen.</p></div>
+      <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1.5"><div class="font-bold text-white text-sm">Desktop</div><p>Use the install icon in the browser address bar or the browser menu if installation is supported.</p></div>
+    </div>
+    <div class="space-y-3 text-xs">
+      <div class="font-bold text-white">Optional desktop and mobile releases</div>
+      <div class="grid grid-cols-2 gap-2">
+        <a id="androidReleaseLink" href="#" class="release-link opacity-50 pointer-events-none">Android (Not configured)</a>
+        <a id="windowsReleaseLink" href="#" class="release-link opacity-50 pointer-events-none">Windows (Not configured)</a>
+        <a id="macosReleaseLink" href="#" class="release-link opacity-50 pointer-events-none">macOS (Not configured)</a>
+        <a id="linuxReleaseLink" href="#" class="release-link opacity-50 pointer-events-none">Linux (Not configured)</a>
+      </div>
+    </div>
+  </aside>
+
+  <div id="settingsModal" class="fixed inset-0 bg-black/75 z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="glass rounded-3xl w-full max-w-xl p-6 space-y-4 my-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <span class="text-[11px] uppercase tracking-wider text-amber-400 font-semibold">Admin Area</span>
+          <h2 class="text-lg font-bold text-white">Provider settings</h2>
+        </div>
+        <button id="closeSettingsBtn" type="button" class="p-2 rounded-xl bg-slate-800 text-slate-300" aria-label="Close settings">✕</button>
+      </div>
+      <form id="adminAuthForm" class="space-y-3">
+        <p class="text-xs text-slate-400">Unlock the local configuration panel using the administrator passcode configured in Vercel.</p>
+        <label for="adminPassInput" class="block text-xs text-slate-300 font-semibold">ADMIN PASSCODE</label>
+        <input id="adminPassInput" type="password" autocomplete="current-password" required class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white" placeholder="Enter admin passcode">
+        <div id="adminAuthError" class="hidden text-xs text-rose-300" role="alert">Invalid passcode.</div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-sm">Unlock Settings</button>
+      </form>
+      <div id="adminConfigPanel" class="hidden space-y-4 text-xs">
+        <div class="rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 text-amber-100">
+          <strong>Provider integration status: not connected</strong>
+          <p class="mt-1 text-amber-100/80">These fields save configuration in this browser only. They do not activate an API. Connect a provider only after its official request and response documentation has been verified. Keep credentials in Vercel Environment Variables.</p>
+        </div>
+        <div class="space-y-2">
+          <label for="cfgPrimaryApi" class="block text-slate-300 font-semibold">YouTube / Primary Resolver Endpoint</label>
+          <input id="cfgPrimaryApi" type="url" placeholder="https://provider.example" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+        </div>
+        <div class="space-y-2">
+          <label for="cfgFallbackApi" class="block text-slate-300 font-semibold">Multi-Platform Fallback Endpoint (Optional)</label>
+          <input id="cfgFallbackApi" type="url" placeholder="https://provider.example" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label for="cfgAndroidUrl" class="block text-slate-300 font-semibold mb-1">Android APK URL</label><input id="cfgAndroidUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
+          <div><label for="cfgWindowsUrl" class="block text-slate-300 font-semibold mb-1">Windows Installer URL</label><input id="cfgWindowsUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
+          <div><label for="cfgMacosUrl" class="block text-slate-300 font-semibold mb-1">macOS Installer URL</label><input id="cfgMacosUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
+          <div><label for="cfgLinuxUrl" class="block text-slate-300 font-semibold mb-1">Linux Installer URL</label><input id="cfgLinuxUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
+        </div>
+        <div class="flex flex-wrap gap-2 pt-2">
+          <button id="saveConfigBtn" type="button" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold">Save Config</button>
+          <button id="exportConfigBtn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200">Export JSON</button>
+          <button id="importConfigBtn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200">Import JSON</button>
+          <input id="importConfigFile" type="file" accept="application/json" class="hidden">
+        </div>
+        <div id="diagnosticsBox" class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 font-mono text-[11px] text-slate-400"></div>
+        <button id="adminLockBtn" type="button" class="text-xs text-slate-400 hover:text-white">Lock settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
