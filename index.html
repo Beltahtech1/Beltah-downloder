@@ -108,13 +108,58 @@
       <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1.5"><div class="font-bold text-white text-sm">iPhone / iPad</div><p>Open in Safari, tap Share, then choose Add to Home Screen.</p></div>
       <div class="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-1.5"><div class="font-bold text-white text-sm">Desktop</div><p>Use the install icon in the browser address bar or the browser menu if installation is supported.</p></div>
     </div>
+    <div class="space-y-3 text-xs">
+      <div class="font-bold text-white">Optional desktop and mobile releases</div>
+      <div class="grid grid-cols-2 gap-2">
+        <a id="androidReleaseLink" href="#" class="release-link opacity-50 pointer-events-none">Android (Not configured)</a>
+        <a id="windowsReleaseLink" href="#" class="release-link opacity-50 pointer-events-none">Windows (Not configured)</a>
+        <a id="macosReleaseLink" href="#" class="release-link opacity-50 pointer-events-none">macOS (Not configured)</a>
+        <a id="linuxReleaseLink" href="#" class="release-link opacity-50 pointer-events-none">Linux (Not configured)</a>
+      </div>
+    </div>
   </aside>
 
-  <div id="settingsModal" class="fixed inset-0 bg-black/75 z-50 hidden items-center justify-center p-4">
-    <div class="glass rounded-3xl w-full max-w-xl p-6 space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3"><div><span class="text-[11px] uppercase tracking-wider text-amber-400 font-semibold">Provider Status</span><h2 class="text-lg font-bold text-white">Multi-Platform API</h2></div><button id="closeSettingsBtn" type="button" class="p-2 rounded-xl bg-slate-800 text-slate-300">✕</button></div>
-      <div class="rounded-xl border border-amber-400/25 bg-amber-400/10 p-4 text-sm text-amber-100"><strong>Not connected</strong><p class="mt-2 text-xs leading-relaxed text-amber-100/80">No verified resolver is currently configured. The Silvatechs endpoint needs its documented HTTP method, request fields and response schema before it can safely be connected. API secrets must remain in Vercel Environment Variables, never in this browser.</p></div>
-      <p class="text-xs text-slate-400">Direct media downloads work when the source permits browser access. YouTube links can be opened in the external YTDown service. Other platform extraction is not yet active.</p>
+  <div id="settingsModal" class="fixed inset-0 bg-black/75 z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="glass rounded-3xl w-full max-w-xl p-6 space-y-4 my-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div><span class="text-[11px] uppercase tracking-wider text-amber-400 font-semibold">Admin Area</span><h2 class="text-lg font-bold text-white">Provider settings</h2></div>
+        <button id="closeSettingsBtn" type="button" class="p-2 rounded-xl bg-slate-800 text-slate-300" aria-label="Close settings">✕</button>
+      </div>
+      <form id="adminAuthForm" class="space-y-3">
+        <p class="text-xs text-slate-400">Unlock the local configuration panel using the administrator passcode configured in Vercel.</p>
+        <label for="adminPassInput" class="block text-xs text-slate-300 font-semibold">ADMIN PASSCODE</label>
+        <input id="adminPassInput" type="password" autocomplete="current-password" required class="w-full px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white" placeholder="Enter admin passcode">
+        <div id="adminAuthError" class="hidden text-xs text-rose-300" role="alert">Invalid passcode.</div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-sm">Unlock Settings</button>
+      </form>
+      <div id="adminConfigPanel" class="hidden space-y-4 text-xs">
+        <div class="rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 text-amber-100">
+          <strong>Provider integration status: not connected</strong>
+          <p class="mt-1 text-amber-100/80">These fields save configuration in this browser only. They do not activate an API. Connect a provider only after its official request and response documentation has been verified. Keep credentials in Vercel Environment Variables.</p>
+        </div>
+        <div class="space-y-2">
+          <label for="cfgPrimaryApi" class="block text-slate-300 font-semibold">YouTube / Primary Resolver Endpoint</label>
+          <input id="cfgPrimaryApi" type="url" placeholder="https://provider.example" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+        </div>
+        <div class="space-y-2">
+          <label for="cfgFallbackApi" class="block text-slate-300 font-semibold">Multi-Platform Fallback Endpoint (Optional)</label>
+          <input id="cfgFallbackApi" type="url" placeholder="https://provider.example" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label for="cfgAndroidUrl" class="block text-slate-300 font-semibold mb-1">Android APK URL</label><input id="cfgAndroidUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
+          <div><label for="cfgWindowsUrl" class="block text-slate-300 font-semibold mb-1">Windows Installer URL</label><input id="cfgWindowsUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
+          <div><label for="cfgMacosUrl" class="block text-slate-300 font-semibold mb-1">macOS Installer URL</label><input id="cfgMacosUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
+          <div><label for="cfgLinuxUrl" class="block text-slate-300 font-semibold mb-1">Linux Installer URL</label><input id="cfgLinuxUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
+        </div>
+        <div class="flex flex-wrap gap-2 pt-2">
+          <button id="saveConfigBtn" type="button" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold">Save Config</button>
+          <button id="exportConfigBtn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200">Export JSON</button>
+          <button id="importConfigBtn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200">Import JSON</button>
+          <input id="importConfigFile" type="file" accept="application/json" class="hidden">
+        </div>
+        <div id="diagnosticsBox" class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 font-mono text-[11px] text-slate-400"></div>
+        <button id="adminLockBtn" type="button" class="text-xs text-slate-400 hover:text-white">Lock settings</button>
+      </div>
     </div>
   </div>
 
