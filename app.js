@@ -236,7 +236,7 @@
   }
   async function importConfig(event) {
     const file = event.target.files?.[0]; if (!file) return;
-    try { const parsed = JSON.parse(await file.text()); state.config = { ...DEFAULT_CONFIG, ...parsed, releases: { ...DEFAULT_CONFIG.releases, ...(parsed.releases || {}) }}; saveConfig(); fillConfigForm(); }
+    try { const parsed = JSON.parse(await file.text()); state.config = { ...DEFAULT_CONFIG, ...parsed, releases: { ...DEFAULT_CONFIG.releases, ...(parsed.releases || {}) }}; fillConfigForm(); saveConfig(); }
     catch { toast("Invalid configuration JSON."); } finally { event.target.value = ""; }
   }
   function clearHistory() { state.history = []; localStorage.removeItem(HISTORY_KEY); renderHistory(); toast("History cleared."); }
