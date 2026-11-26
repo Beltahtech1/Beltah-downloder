@@ -399,5 +399,46 @@
   document.addEventListener("keydown", e => { if (e.key === "/" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName)) { e.preventDefault(); $("queryInput").focus(); } if (e.key === "Escape") { closeDrawer(); closeSettings(); } });
   $("year").textContent = String(new Date().getFullYear());
   renderHistory(); renderQueue(); syncReleaseLinks(); updateBadge();
-  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+  // Branded launch screen: hold for three seconds, then reveal the workspace.
+  const launchSplash = $("launchSplash");
+  if (launchSplash) window.setTimeout(() => {
+    launchSplash.classList.add("launch-splash-hide");
+    window.setTimeout(() => launchSplash.remove(), 500);
+  }, 3000);
+
+  // Installed PWA update handling: detect a new service worker and offer a one-tap refresh.
+  if ("serviceWorker" in navigator) {
+    let isReloadingForUpdate = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (isReloadingForUpdate) return;
+      isReloadingForUpdate = true;
+      window.location.reload();
+    });
+    const revealUpdateBanner = () => $("appUpdateBanner")?.classList.remove("hidden");
+    window.addEventListener("load", async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
+        await registration.update();
+        if (registration.waiting && navigator.serviceWorker.controller) revealUpdateBanner();
+        registration.addEventListener("updatefound", () => {
+          const worker = registration.installing;
+          if (!worker) return;
+          worker.addEventListener("statechange", () => {
+            if (worker.state === "installed" && navigator.serviceWorker.controller) revealUpdateBanner();
+          });
+        });
+        $("applyAppUpdateBtn")?.addEventListener("click", async () => {
+          try {
+            await registration.update();
+            if (registration.waiting) registration.waiting.postMessage({ type: "SKIP_WAITING" });
+            else toast("No new update is available right now.");
+          } catch (error) {
+            toast("Could not check for updates. Please try again.");
+          }
+        });
+      } catch (error) {
+        console.warn("Beltah Tech update check failed:", error);
+      }
+    });
+  }
 })();
