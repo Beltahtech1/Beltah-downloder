@@ -139,6 +139,11 @@
           </div>
         </div>
 
+        <div class="flex items-center justify-between gap-3 rounded-xl bg-[#0d1422] border border-slate-700/70 px-3 py-2.5">
+          <label for="downloadFormat" class="text-xs font-semibold text-slate-300">Download format</label>
+          <select id="downloadFormat" class="bg-[#151f32] border border-slate-700 rounded-lg px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-sky-400"><option value="mp4">MP4 video</option><option value="mp3">MP3 audio</option></select>
+        </div>
+
         <button id="searchSubmitBtn" type="submit" class="w-full py-3.5 px-6 rounded-2xl cta-gradient text-white font-bold text-sm sm:text-base shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2 transition">
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"></circle>
@@ -337,17 +342,10 @@
         <button type="submit" class="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-sm">Unlock Settings</button>
       </form>
       <div id="adminConfigPanel" class="hidden space-y-4 text-xs">
-        <div class="rounded-xl border border-amber-400/25 bg-amber-400/10 p-3 text-amber-100">
-          <strong>Provider integration status: not connected</strong>
-          <p class="mt-1 text-amber-100/80">These fields save configuration in this browser only. They do not activate an API. Connect a provider only after its official request and response documentation has been verified. Keep credentials in Vercel Environment Variables.</p>
-        </div>
-        <div class="space-y-2">
-          <label for="cfgPrimaryApi" class="block text-slate-300 font-semibold">YouTube / Primary Resolver Endpoint</label>
-          <input id="cfgPrimaryApi" type="url" placeholder="https://provider.example" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
-        </div>
-        <div class="space-y-2">
-          <label for="cfgFallbackApi" class="block text-slate-300 font-semibold">Multi-Platform Fallback Endpoint (Optional)</label>
-          <input id="cfgFallbackApi" type="url" placeholder="https://provider.example" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white">
+        <div class="rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-3 text-emerald-100">
+          <strong>Active provider: SilvaTech Downloader</strong>
+          <p class="mt-1 text-emerald-100/80">This app uses one resolver only. Search requests use the q parameter; pasted links use the url parameter. Choose MP3 or MP4 in the download form.</p>
+          <a class="inline-block mt-2 underline text-emerald-200" href="https://downloader.silvatechs.com/docs" target="_blank" rel="noopener noreferrer">View SilvaTech API documentation</a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div><label for="cfgAndroidUrl" class="block text-slate-300 font-semibold mb-1">Android APK URL</label><input id="cfgAndroidUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>
