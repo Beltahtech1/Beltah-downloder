@@ -140,8 +140,8 @@
         </div>
 
         <div class="flex items-center justify-between gap-3 rounded-xl bg-[#0d1422] border border-slate-700/70 px-3 py-2.5">
-          <label for="downloadFormat" class="text-xs font-semibold text-slate-300">Download format</label>
-          <select id="downloadFormat" class="bg-[#151f32] border border-slate-700 rounded-lg px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-sky-400"><option value="mp4">MP4 video</option><option value="mp3">MP3 audio</option></select>
+          <label for="downloadFormat" class="text-xs font-semibold text-slate-300">First format to prepare</label>
+          <select id="downloadFormat" class="bg-[#151f32] border border-slate-700 rounded-lg px-3 py-2 text-xs font-semibold text-white focus:outline-none focus:border-sky-400"><option value="mp4">MP4 video · 360p</option><option value="mp3">MP3 audio</option></select>
         </div>
 
         <button id="searchSubmitBtn" type="submit" class="w-full py-3.5 px-6 rounded-2xl cta-gradient text-white font-bold text-sm sm:text-base shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2 transition">
@@ -343,9 +343,8 @@
       </form>
       <div id="adminConfigPanel" class="hidden space-y-4 text-xs">
         <div class="rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-3 text-emerald-100">
-          <strong>Active provider: SilvaTech Downloader</strong>
-          <p class="mt-1 text-emerald-100/80">This app uses one resolver only. Search requests use the q parameter; pasted links use the url parameter. Choose MP3 or MP4 in the download form.</p>
-          <a class="inline-block mt-2 underline text-emerald-200" href="https://downloader.silvatechs.com/docs" target="_blank" rel="noopener noreferrer">View SilvaTech API documentation</a>
+          <strong>Beltah Tech Media Engine</strong>
+          <p class="mt-1 text-emerald-100/80">Media requests are processed through the Beltah Tech download service. Choose MP4 video at 360p or MP3 audio from the results panel.</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div><label for="cfgAndroidUrl" class="block text-slate-300 font-semibold mb-1">Android APK URL</label><input id="cfgAndroidUrl" type="url" placeholder="https://" class="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white"></div>

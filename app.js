@@ -11,6 +11,7 @@
     history: readJson(HISTORY_KEY, []),
     queue: [],
     searchController: null,
+    searchProgressTimer: null,
     downloadController: null,
     deferredPrompt: null,
     lastQuery: ""
@@ -96,12 +97,61 @@
     const panel = $("statusPanel"); panel.className = "glass rounded-2xl p-4 text-sm " + (kind === "error" ? "border border-rose-500/40 text-rose-200" : kind === "success" ? "border border-emerald-500/30 text-emerald-200" : "text-slate-300");
     panel.textContent = message; panel.classList.remove("hidden");
   }
+  function stopSearchProgress() {
+    if (state.searchProgressTimer) clearInterval(state.searchProgressTimer);
+    state.searchProgressTimer = null;
+  }
   function showLoading(query) {
-    const panel = $("statusPanel"); panel.className = "glass rounded-2xl p-5 text-sm text-sky-200";
+    stopSearchProgress();
+    const panel = $("statusPanel");
+    panel.className = "glass rounded-3xl border border-sky-400/20 bg-slate-950/90 p-5 sm:p-6 text-sm text-slate-200 shadow-2xl shadow-sky-950/30";
     panel.replaceChildren();
-    const label = document.createElement("div"); label.textContent = "Checking: " + query;
-    const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "ml-3 px-3 py-1 rounded-lg bg-slate-800 text-rose-200"; cancel.textContent = "Cancel";
-    cancel.addEventListener("click", () => state.searchController?.abort()); panel.append(label, cancel); panel.classList.remove("hidden");
+    const wrap = document.createElement("div"); wrap.className = "space-y-4";
+    const top = document.createElement("div"); top.className = "flex items-center gap-3";
+    const spinner = document.createElement("div"); spinner.className = "h-10 w-10 shrink-0 rounded-full border-2 border-sky-400/20 border-t-sky-400 animate-spin";
+    const copy = document.createElement("div"); copy.className = "min-w-0 flex-1";
+    const title = document.createElement("div"); title.className = "font-bold text-white text-base"; title.textContent = "Beltah Tech searching";
+    const detail = document.createElement("div"); detail.className = "text-xs text-slate-400 truncate"; detail.textContent = query;
+    copy.append(title, detail); top.append(spinner, copy);
+    const line = document.createElement("div"); line.className = "flex items-center justify-between text-xs";
+    const phase = document.createElement("span"); phase.className = "text-sky-300"; phase.textContent = "Connecting securely…";
+    const percent = document.createElement("strong"); percent.className = "text-white tabular-nums"; percent.textContent = "3%";
+    line.append(phase, percent);
+    const track = document.createElement("div"); track.className = "h-2.5 rounded-full overflow-hidden bg-slate-800";
+    const bar = document.createElement("div"); bar.className = "h-full rounded-full bg-gradient-to-r from-sky-400 via-cyan-300 to-indigo-400 transition-all duration-300"; bar.style.width = "3%"; track.append(bar);
+    const foot = document.createElement("div"); foot.className = "flex items-center justify-between gap-3 text-[11px] text-slate-500";
+    const note = document.createElement("span"); note.textContent = "Preparing your media options";
+    const cancel = document.createElement("button"); cancel.type = "button"; cancel.className = "px-3 py-1.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300"; cancel.textContent = "Cancel";
+    cancel.addEventListener("click", () => state.searchController?.abort());
+    foot.append(note, cancel); wrap.append(top, line, track, foot); panel.append(wrap); panel.classList.remove("hidden");
+    let value = 3;
+    const phases = ["Connecting securely…","Checking the media link…","Preparing video and audio options…","Almost ready…"];
+    state.searchProgressTimer = setInterval(() => {
+      if (value < 35) value += 4;
+      else if (value < 70) value += 2;
+      else if (value < 92) value += 1;
+      value = Math.min(value, 92);
+      percent.textContent = value + "%"; bar.style.width = value + "%";
+      phase.textContent = phases[Math.min(3, Math.floor(value / 25))];
+    }, 220);
+  }
+  function finishSearchProgress() {
+    stopSearchProgress();
+    const panel = $("statusPanel");
+    const percent = panel.querySelector("strong");
+    const bar = panel.querySelector(".bg-gradient-to-r");
+    const phase = panel.querySelector(".text-sky-300");
+    if (percent) percent.textContent = "100%";
+    if (bar) bar.style.width = "100%";
+    if (phase) phase.textContent = "Beltah Tech Found";
+    const title = panel.querySelector(".font-bold.text-white");
+    if (title) title.textContent = "Beltah Tech Found";
+    const spinner = panel.querySelector(".animate-spin");
+    if (spinner) spinner.className = "h-10 w-10 shrink-0 rounded-full border-2 border-emerald-400/30 bg-emerald-400/10";
+    const note = panel.querySelector(".text-slate-500");
+    if (note) note.textContent = "Your media is ready. Choose video or audio below.";
+    const cancel = panel.querySelector("button");
+    if (cancel) cancel.remove();
   }
   function directFileCandidate(url) {
     const ext = extensionFor(url);
@@ -123,21 +173,48 @@
   }
   function renderResult(item) {
     const grid = $("resultsGrid"); grid.replaceChildren();
-    const card = document.createElement("article"); card.className = "glass rounded-2xl p-4 space-y-3";
-    const heading = document.createElement("div"); heading.className = "font-bold text-white break-words"; heading.textContent = item.title;
-    const meta = document.createElement("div"); meta.className = "text-xs text-slate-400"; meta.textContent = (item.mime || "Source file") + " · " + formatBytes(item.size) + " · Original file";
-    card.append(heading, meta);
+    const card = document.createElement("article"); card.className = "glass rounded-3xl border border-slate-700/70 bg-slate-950/70 p-4 sm:p-5 space-y-4 shadow-xl shadow-black/20";
+    const header = document.createElement("div"); header.className = "flex items-start gap-3";
+    const icon = document.createElement("div"); icon.className = "h-11 w-11 shrink-0 rounded-2xl bg-gradient-to-br from-sky-400/20 to-indigo-500/20 border border-sky-400/20 flex items-center justify-center text-sky-300 text-lg"; icon.textContent = item.format === "mp3" ? "♫" : "▶";
+    const titleWrap = document.createElement("div"); titleWrap.className = "min-w-0 flex-1";
+    const eyebrow = document.createElement("div"); eyebrow.className = "text-[10px] uppercase tracking-[.18em] text-emerald-300 font-bold"; eyebrow.textContent = "BELTAH TECH FOUND";
+    const heading = document.createElement("div"); heading.className = "mt-1 font-bold text-white break-words"; heading.textContent = item.title;
+    const meta = document.createElement("div"); meta.className = "mt-1 text-xs text-slate-400"; meta.textContent = (item.format === "mp3" ? "MP3 audio" : "MP4 video · 360p") + "  •  " + (item.size > 0 ? formatBytes(item.size) : "File size unavailable");
+    titleWrap.append(eyebrow, heading, meta); header.append(icon, titleWrap); card.append(header);
+    const sizePanel = document.createElement("div"); sizePanel.className = "rounded-2xl bg-slate-900/80 border border-slate-800 px-3.5 py-3 flex items-center justify-between gap-3";
+    const sizeLabel = document.createElement("div"); sizeLabel.className = "text-xs text-slate-400"; sizeLabel.textContent = "Estimated download size";
+    const sizeValue = document.createElement("div"); sizeValue.className = "font-bold text-white text-sm tabular-nums"; sizeValue.textContent = item.size > 0 ? formatBytes(item.size) : "Not provided by source";
+    sizePanel.append(sizeLabel, sizeValue); card.append(sizePanel);
     if (item.kind === "video" || item.kind === "audio") {
       const preview = document.createElement(item.kind); preview.controls = true; preview.preload = "metadata"; preview.src = item.url;
-      preview.className = "w-full rounded-xl max-h-72"; if (item.kind === "video") preview.playsInline = true; card.append(preview);
+      preview.className = "w-full rounded-2xl max-h-72 bg-black"; if (item.kind === "video") preview.playsInline = true; card.append(preview);
     }
-    const actions = document.createElement("div"); actions.className = "flex flex-wrap gap-2";
-    const download = document.createElement("button"); download.type = "button"; download.className = "px-4 py-2 rounded-xl bg-sky-500 text-slate-950 font-bold text-xs"; download.textContent = "Download file";
+    const optionsTitle = document.createElement("div"); optionsTitle.className = "text-xs font-semibold text-slate-300"; optionsTitle.textContent = "Choose your download";
+    const options = document.createElement("div"); options.className = "grid grid-cols-1 sm:grid-cols-2 gap-2";
+    [["mp4","▶","Video · MP4","360p"],["mp3","♫","Audio · MP3","Audio"]].forEach(([format,symbol,label,sub]) => {
+      const option = document.createElement("button"); option.type = "button";
+      const active = item.format === format;
+      option.className = "rounded-2xl border px-3 py-3 text-left transition " + (active ? "border-sky-400/60 bg-sky-400/10" : "border-slate-700 bg-slate-900/70 hover:border-slate-500");
+      const line = document.createElement("div"); line.className = "flex items-center justify-between gap-2";
+      const name = document.createElement("span"); name.className = "font-bold text-sm text-white"; name.textContent = symbol + "  " + label;
+      const mark = document.createElement("span"); mark.className = "text-[10px] rounded-full px-2 py-1 " + (active ? "bg-sky-400/15 text-sky-200" : "bg-slate-800 text-slate-400"); mark.textContent = active ? "Ready" : "Prepare";
+      const detail = document.createElement("div"); detail.className = "mt-1 text-[11px] text-slate-400"; detail.textContent = sub;
+      line.append(name, mark); option.append(line, detail);
+      option.addEventListener("click", () => { if (!active) runSearch(item.query || state.lastQuery, format); });
+      options.append(option);
+    });
+    card.append(optionsTitle, options);
+    const actions = document.createElement("div"); actions.className = "grid grid-cols-1 sm:grid-cols-2 gap-2";
+    const download = document.createElement("button"); download.type = "button"; download.className = "px-4 py-3 rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 text-slate-950 font-extrabold text-sm shadow-lg shadow-sky-500/15"; download.textContent = "Download " + (item.format === "mp3" ? "Audio" : "Video");
     download.addEventListener("click", () => startDownload(item));
-    const open = document.createElement("a"); open.href = item.url; open.target = "_blank"; open.rel = "noopener noreferrer"; open.className = "px-4 py-2 rounded-xl bg-slate-800 text-slate-200 text-xs"; open.textContent = "Open source";
-    const copy = document.createElement("button"); copy.type = "button"; copy.className = "px-4 py-2 rounded-xl bg-slate-800 text-slate-200 text-xs"; copy.textContent = "Copy link";
-    copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(item.url); toast("Link copied."); } catch { toast("Clipboard access is unavailable."); } });
-    actions.append(download, open, copy); card.append(actions); grid.append(card);
+    const another = document.createElement("button"); another.type = "button"; another.className = "px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 font-semibold text-sm"; another.textContent = "＋ Download another file";
+    another.addEventListener("click", () => {
+      state.searchController?.abort(); stopSearchProgress(); state.lastQuery = "";
+      $("queryInput").value = ""; updateBadge(); $("resultsGrid").replaceChildren();
+      $("resultsSection").classList.add("hidden"); $("statusPanel").classList.add("hidden");
+      $("queryInput").focus(); window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    actions.append(download, another); card.append(actions); grid.append(card);
     $("resultsSection").classList.remove("hidden");
   }
   function collectDownloadCandidates(value, output = [], seen = new Set()) {
@@ -157,64 +234,72 @@
     });
     return output;
   }
-  async function runSearch(raw) {
+  async function runSearch(raw, requestedFormat) {
     const query = raw.trim();
     if (!query) { setStatus("Enter a search term or paste a media URL.", "error"); return; }
-    state.lastQuery = query; saveHistory(query); state.searchController?.abort(); state.searchController = new AbortController();
+    state.lastQuery = query; saveHistory(query); state.searchController?.abort();
+    const controller = new AbortController(); state.searchController = controller;
     $("resultsSection").classList.add("hidden"); showLoading(query);
     const sourceUrl = safeUrl(query);
-    const format = $("downloadFormat")?.value === "mp3" ? "mp3" : "mp4";
+    const format = requestedFormat || ($("downloadFormat")?.value === "mp3" ? "mp3" : "mp4");
+    if ($("downloadFormat")) $("downloadFormat").value = format;
     const endpoint = new URL(SILVATECHS_API);
     endpoint.searchParams.set(sourceUrl ? "url" : "q", query);
     endpoint.searchParams.set("format", format);
+    if (format === "mp4") endpoint.searchParams.set("quality", "360");
     try {
       const response = await fetch(endpoint.toString(), {
         method: "GET", mode: "cors", credentials: "omit",
         headers: { "Accept": "application/json, audio/*, video/*, application/octet-stream" },
-        signal: state.searchController.signal
+        signal: controller.signal
       });
       if (!response.ok) {
         let detail = "";
         try { const errorData = await response.clone().json(); detail = errorData.message || errorData.error || ""; } catch {}
-        throw new Error(detail || "SilvaTech returned HTTP " + response.status + ".");
+        throw new Error(detail || "Beltah Tech could not process this request (HTTP " + response.status + ").");
       }
       const contentType = response.headers.get("content-type") || "";
       if (/^(audio|video)\//i.test(contentType) || /application\/(octet-stream|force-download)/i.test(contentType)) {
         const blob = await response.blob();
         const mediaUrl = URL.createObjectURL(blob);
-        const item = { title: query.split("/").pop().slice(0,90) || "silvatechs-media", url: mediaUrl, mime: contentType.split(";")[0], size: blob.size, kind: mediaType("download." + format, contentType) };
-        $("statusPanel").classList.add("hidden"); renderResult(item); setStatus("SilvaTech prepared your " + format.toUpperCase() + " file.", "success"); return;
+        const item = { title: query.split("/").pop().slice(0,90) || "beltah-media", url: mediaUrl, mime: contentType.split(";")[0], size: blob.size, kind: mediaType("download." + format, contentType), format, query };
+        finishSearchProgress(); renderResult(item); return;
       }
       const rawBody = await response.text();
       let payload;
       try { payload = JSON.parse(rawBody); } catch {
         const plainUrl = safeUrl(rawBody.trim());
         if (plainUrl) payload = { url: plainUrl };
-        else throw new Error("SilvaTech returned an unrecognised response. Check its API response format.");
+        else throw new Error("Beltah Tech received an unreadable response. Please try again.");
       }
       if (payload?.success === false || payload?.status === "error") {
-        throw new Error(payload.message || payload.error || "SilvaTech could not process this request.");
+        throw new Error(payload.message || payload.error || "Beltah Tech could not process this request.");
       }
       const candidates = collectDownloadCandidates(payload);
       const selected = candidates.find(item => item.format.includes(format)) ||
         candidates.find(item => new RegExp("\\." + format + "(?:$|[?#])","i").test(item.url)) || candidates[0];
       if (!selected) {
-        const message = payload?.message || payload?.error || "No downloadable file was returned by SilvaTech.";
+        const message = payload?.message || payload?.error || "Beltah Tech could not find a downloadable file for this request.";
         throw new Error(message);
       }
-      const title = selected.title || payload.title || payload.data?.title || "silvatechs-" + format;
-      const item = { title, url: selected.url, mime: format === "mp3" ? "audio/mpeg" : "video/mp4", size: Number(payload.size || payload.data?.size || 0), kind: format === "mp3" ? "audio" : "video" };
-      $("statusPanel").classList.add("hidden"); renderResult(item);
-      setStatus("SilvaTech found your " + format.toUpperCase() + " download. Choose Download file to save it.", "success");
+      const title = selected.title || payload.title || payload.data?.title || "beltah-" + format;
+      let size = Number(payload.size || payload.fileSize || payload.filesize || payload.contentLength || payload.data?.size || payload.data?.fileSize || 0);
+      if (!Number.isFinite(size) || size <= 0) size = 0;
+      if (!size) {
+        try { const head = await fetch(selected.url, { method: "HEAD", mode: "cors", credentials: "omit", signal: controller.signal }); if (head.ok) size = Number(head.headers.get("content-length") || 0); } catch (headError) { if (headError.name === "AbortError") throw headError; }
+      }
+      const item = { title, url: selected.url, mime: format === "mp3" ? "audio/mpeg" : "video/mp4", size, kind: format === "mp3" ? "audio" : "video", format, query };
+      finishSearchProgress(); renderResult(item);
     } catch (err) {
-      if (err.name === "AbortError") return;
-      setStatus(err.message || "SilvaTech could not process this request.", "error");
+      if (err.name === "AbortError") { stopSearchProgress(); $("statusPanel").classList.add("hidden"); return; }
+      stopSearchProgress();
+      setStatus(err.message || "Beltah Tech could not process this request.", "error");
     }
   }
   async function startDownload(item) {
     const url = safeUrl(item.url) || (String(item.url || "").startsWith("blob:") ? item.url : ""); if (!url) return toast("Invalid download URL.");
     state.downloadController?.abort(); const controller = new AbortController(); state.downloadController = controller;
-    const entry = { id: Date.now(), url, title: item.title || "beltah-media", ext: extensionFor(url) || "bin", status: "Downloading" };
+    const entry = { id: Date.now(), url, title: item.title || "beltah-media", ext: extensionFor(url) || (item.format === "mp3" ? "mp3" : item.format === "mp4" ? "mp4" : "bin"), status: "Downloading" };
     state.queue.unshift(entry); renderQueue();
     const section = $("progressSection"), bar = $("progressBar"), stats = $("progressStats");
     $("progressTitle").textContent = entry.title; bar.style.width = "0%"; stats.textContent = "Connecting to source…"; section.classList.remove("hidden");
@@ -252,7 +337,7 @@
   function fillConfigForm() {
     $("cfgAndroidUrl").value = state.config.releases.android || ""; $("cfgWindowsUrl").value = state.config.releases.windows || "";
     $("cfgMacosUrl").value = state.config.releases.macos || ""; $("cfgLinuxUrl").value = state.config.releases.linux || "";
-    $("diagnosticsBox").textContent = "Device: " + detectOS() + " | Online: " + navigator.onLine + " | History: " + state.history.length + " | Queue: " + state.queue.length + " | Resolver: SilvaTech public API";
+    $("diagnosticsBox").textContent = "Device: " + detectOS() + " | Online: " + navigator.onLine + " | History: " + state.history.length + " | Queue: " + state.queue.length + " | Media engine: Beltah Tech";
   }
   function validOptionalUrl(value, label) { if (!value.trim()) return ""; const url = safeUrl(value.trim()); if (!url) throw new Error(label + " must be a valid HTTP/HTTPS URL."); return url; }
   async function unlockAdmin(event) {
@@ -271,7 +356,7 @@
         android: validOptionalUrl($("cfgAndroidUrl").value, "Android URL"), windows: validOptionalUrl($("cfgWindowsUrl").value, "Windows URL"),
         macos: validOptionalUrl($("cfgMacosUrl").value, "macOS URL"), linux: validOptionalUrl($("cfgLinuxUrl").value, "Linux URL")
       }};
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.config)); syncReleaseLinks(); fillConfigForm(); toast("Release links saved on this device. SilvaTech is the only resolver.");
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.config)); syncReleaseLinks(); fillConfigForm(); toast("Release links saved on this device.");
     } catch (err) { toast(err.message); }
   }
   function exportConfig() {
