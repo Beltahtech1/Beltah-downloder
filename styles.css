@@ -118,3 +118,24 @@ footer b{color:#b4a7ff}
  .fallback-card{padding:13px}.fallback-actions>*{flex:1}.fallback-top strong{font-size:12px}footer{width:calc(100% - 26px);justify-content:center;flex-wrap:wrap;text-align:center;padding:17px 0}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.loading-skeleton{animation:none;background:#1b2740}}
+
+
+/* Centered brand-first launch screen */
+.launch-splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;min-height:100svh;padding:24px;background:radial-gradient(ellipse at 50% 42%,rgba(44,72,124,.34),transparent 48%),linear-gradient(145deg,#070b15 0%,#0b1426 56%,#080d19 100%);opacity:1;visibility:visible;transition:opacity .48s ease,visibility .48s ease}
+.launch-splash-content{width:min(92vw,720px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:25px}
+.launch-brand-icon{width:clamp(88px,19vw,132px);aspect-ratio:1;display:grid;place-items:center;border-radius:32px;background:linear-gradient(145deg,rgba(102,211,244,.12),rgba(139,120,245,.12));box-shadow:0 0 70px rgba(84,177,230,.14),0 20px 55px rgba(0,0,0,.36);animation:launch-logo-enter .8s cubic-bezier(.2,.8,.2,1) both}
+.launch-b-mark{width:100%;height:100%;filter:drop-shadow(0 5px 18px rgba(103,205,245,.2))}
+.launch-welcome-svg{display:block;width:min(100%,680px);height:auto;overflow:visible}
+.welcome-line{fill:transparent;stroke:#dceaff;stroke-width:.7px;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;paint-order:stroke;animation:welcome-type 1.45s steps(28,end) forwards}
+.welcome-line-one{font:700 31px 'Space Grotesk',sans-serif;letter-spacing:1.8px}
+.welcome-line-two{font:700 35px 'Space Grotesk',sans-serif;letter-spacing:3px;animation-delay:1.15s}
+.launch-caption{color:#91a5c7;font:700 9px 'DM Sans',sans-serif;letter-spacing:3.2px;opacity:0;animation:launch-caption-in .5s ease 2.2s forwards}
+.launch-loader{width:150px;height:3px;overflow:hidden;border-radius:9px;background:#ffffff15}
+.launch-loader span{display:block;width:38%;height:100%;border-radius:9px;background:linear-gradient(90deg,#6ee1d4,#a493ff);animation:launch-progress 2.8s ease-in-out infinite}
+.launch-splash-hide{opacity:0;visibility:hidden;pointer-events:none}
+@keyframes welcome-type{0%{stroke-dashoffset:1;fill:transparent}82%{stroke-dashoffset:0;fill:transparent}100%{stroke-dashoffset:0;fill:#eaf3ff}}
+@keyframes launch-logo-enter{from{opacity:0;transform:translateY(14px) scale(.88)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes launch-caption-in{to{opacity:1}}
+@keyframes launch-progress{0%{transform:translateX(-110%)}100%{transform:translateX(390%)}}
+@media(max-width:520px){.launch-splash-content{gap:22px}.welcome-line-one{font-size:27px;letter-spacing:1px}.welcome-line-two{font-size:31px;letter-spacing:2px}.launch-caption{font-size:8px;letter-spacing:2.2px}}
+@media(prefers-reduced-motion:reduce){.launch-splash-content,.launch-b-mark,.welcome-line,.launch-caption,.launch-loader span{animation:none!important}.welcome-line{stroke-dashoffset:0;fill:#eaf3ff}.launch-caption{opacity:1}}
