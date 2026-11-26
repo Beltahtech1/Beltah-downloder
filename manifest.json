@@ -1,16 +1,24 @@
 {
   "id": "/",
   "name": "BELTAH DOWNLOADER",
-  "short_name": "BELTAH DL",
-  "description": "A clean media link and direct file downloader by Beltah Tech Team.",
+  "short_name": "BELTAH",
+  "description": "Preview and save supported direct media links in one clean workspace.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#090d18",
-  "theme_color": "#090d18",
-  "categories": ["utilities", "productivity"],
+  "background_color": "#080b16",
+  "theme_color": "#080b16",
+  "categories": [
+    "utilities",
+    "productivity"
+  ],
   "icons": [
-    {"src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }
