@@ -140,21 +140,11 @@
     actions.append(download, open, copy); card.append(actions); grid.append(card);
     $("resultsSection").classList.remove("hidden");
   }
-  function showYoutubeFallback(url) {
-    const grid = $("resultsGrid"); grid.replaceChildren();
-    const card = document.createElement("div"); card.className = "glass rounded-2xl p-5 space-y-3";
-    const title = document.createElement("h3"); title.className = "font-bold text-white"; title.textContent = "YouTube external option";
-    const copy = document.createElement("button"); copy.type = "button"; copy.className = "px-4 py-2 rounded-xl bg-sky-500 text-slate-950 font-bold text-xs"; copy.textContent = "Copy YouTube link";
-    copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(url); toast("YouTube link copied."); } catch { toast("Copy unavailable. Select and copy the URL manually."); } });
-    const open = document.createElement("a"); open.href = "https://app.ytdown.to/en38/"; open.target = "_blank"; open.rel = "noopener noreferrer"; open.className = "inline-block px-4 py-2 rounded-xl bg-slate-800 text-slate-200 text-xs"; open.textContent = "Open YTDown";
-    const note = document.createElement("p"); note.className = "text-xs text-slate-400"; note.textContent = "This opens an external service. Beltah Downloader does not extract YouTube streams itself.";
-    card.append(title, note, copy, open); grid.append(card); $("resultsSection").classList.remove("hidden");
-  }
   function collectDownloadCandidates(value, output = [], seen = new Set()) {
     if (!value || typeof value !== "object" || seen.has(value)) return output;
     seen.add(value);
     if (Array.isArray(value)) { value.forEach(item => collectDownloadCandidates(item, output, seen)); return output; }
-    const preferredKeys = ["downloadUrl","download_url","downloadLink","download_link","directUrl","direct_url","url","link","src","file"];
+    const preferredKeys = ["downloadUrl","download_url","downloadLink","download_link","directUrl","direct_url","download","url","link","src","file"];
     for (const key of preferredKeys) {
       const candidate = value[key];
       if (typeof candidate === "string" && safeUrl(candidate)) {
@@ -222,7 +212,7 @@
     }
   }
   async function startDownload(item) {
-    const url = safeUrl(item.url); if (!url) return toast("Invalid download URL.");
+    const url = safeUrl(item.url) || (String(item.url || "").startsWith("blob:") ? item.url : ""); if (!url) return toast("Invalid download URL.");
     state.downloadController?.abort(); const controller = new AbortController(); state.downloadController = controller;
     const entry = { id: Date.now(), url, title: item.title || "beltah-media", ext: extensionFor(url) || "bin", status: "Downloading" };
     state.queue.unshift(entry); renderQueue();
