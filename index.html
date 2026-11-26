@@ -1,49 +1,151 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#080b16"><meta name="description" content="BELTAH DOWNLOADER — a clean, fast media link and file downloader by Beltah Tech Team.">
-  <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="/manifest.json"><link rel="icon" href="/icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icons/icon.svg">
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css"><title>BELTAH DOWNLOADER</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="BELTAH DOWNLOADER — prepare and save direct media files with a clean, mobile-friendly workspace.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <title>BELTAH DOWNLOADER — Save it simply</title>
 </head>
 <body>
-<div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
-<header class="topbar">
-  <a class="brand-mini" href="/" aria-label="Beltah Downloader home"><img src="/icons/icon.svg" alt=""><span>BELTAH <b>DOWNLOADER</b></span></a>
-  <div class="top-actions"><button id="adminOpen" class="settings-btn" type="button">⚙ Settings</button><button id="installBtn" class="install-btn" type="button"><span>↧</span> Install app</button></div>
-</header>
-<main class="shell">
-  <section class="hero">
-    <div class="eyebrow"><span class="live-dot"></span> DIRECT MEDIA WORKSPACE</div>
-    <h1>Save what matters.<br><span>Keep it moving.</span></h1>
-    <p class="hero-copy">Paste a direct media link to check its format, preview playback and save the original file.</p>
-  </section>
-  <section class="workspace glass">
-    <div class="workspace-head"><div><div class="section-kicker">START WITH A LINK</div><h2>Paste. Preview. Download.</h2></div><div id="platformBadge" class="platform-badge">Detecting platform</div></div>
-    <form id="downloadForm">
-      <label class="sr-only" for="mediaUrl">Media or direct file URL</label>
-      <div class="url-field"><span class="link-icon">↗</span><input id="mediaUrl" type="url" inputmode="url" placeholder="Paste a direct MP4, MP3, WebM or file URL…" autocomplete="url" required><button id="clearUrl" class="clear-btn" type="button" aria-label="Clear URL">×</button></div>
-      <div class="form-row"><div class="select-wrap"><label for="formatSelect">FORMAT</label><select id="formatSelect"><option value="auto">Auto detect</option><option value="video">Video files</option><option value="audio">Audio files</option><option value="original">Any supported file</option></select></div><button id="startBtn" class="primary-btn" type="submit"><span>Find media</span><b>↗</b></button></div>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand-mini" href="/" aria-label="Beltah Downloader home">
+      <span class="brand-symbol" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="brand-name">BELTAH <b>DOWNLOADER</b></span>
+    </a>
+    <nav class="top-actions" aria-label="Main actions">
+      <button id="adminOpen" class="settings-btn" type="button"><span aria-hidden="true">⚙</span> Settings</button>
+      <button id="installBtn" class="install-btn" type="button"><span aria-hidden="true">↓</span> Install app</button>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow"><span class="live-dot"></span> YOUR MEDIA WORKSPACE</div>
+      <h1>Save what matters.<br><span>Keep it moving.</span></h1>
+      <p class="hero-copy">One simple place to check a direct media link, preview the source and save the original file.</p>
+      <div class="hero-points" aria-label="Product features">
+        <span><i>✓</i> No file conversion</span>
+        <span><i>✓</i> Original source</span>
+        <span><i>✓</i> Mobile friendly</span>
+      </div>
+    </section>
+
+    <section class="workspace glass" aria-labelledby="workspaceTitle">
+      <div class="workspace-head">
+        <div>
+          <div class="section-kicker">01 / ADD YOUR LINK</div>
+          <h2 id="workspaceTitle">What would you like to save?</h2>
+          <p class="workspace-subtitle">Paste a direct file URL to get started.</p>
+        </div>
+        <div id="platformBadge" class="platform-badge">Waiting for link</div>
+      </div>
+
+      <form id="downloadForm">
+        <label class="sr-only" for="mediaUrl">Media or direct file URL</label>
+        <div class="url-field">
+          <span class="link-icon" aria-hidden="true">↗</span>
+          <input id="mediaUrl" type="url" inputmode="url" placeholder="https://example.com/video.mp4" autocomplete="url" required>
+          <button id="clearUrl" class="clear-btn" type="button" aria-label="Clear URL">×</button>
+        </div>
+        <div class="form-row">
+          <div class="select-wrap">
+            <label for="formatSelect">FILE TYPE</label>
+            <select id="formatSelect">
+              <option value="auto">Auto detect</option>
+              <option value="video">Video files</option>
+              <option value="audio">Audio files</option>
+              <option value="original">Any supported file</option>
+            </select>
+          </div>
+          <button id="startBtn" class="primary-btn" type="submit"><span>Check link</span><b aria-hidden="true">↗</b></button>
+        </div>
+      </form>
+
+      <div class="provider-block">
+        <div class="provider-label">CURRENT LINK SUPPORT</div>
+        <div class="platforms" aria-label="Supported link types">
+          <span class="provider-ready">Direct media <b>Available</b></span>
+          <span class="provider-fallback">YouTube <b>External option</b></span>
+          <span class="provider-limited">Instagram · Not active</span>
+          <span class="provider-limited">TikTok · Not active</span>
+          <span class="provider-limited">X · Not active</span>
+        </div>
+        <p class="provider-note">Direct MP4, MP3, WebM and other supported file URLs can be checked here. Platform page links need a working extraction provider; they are not downloaded by this page yet.</p>
+      </div>
+
+      <div class="notice">
+        <span aria-hidden="true">ⓘ</span>
+        <p><strong>Good to know</strong> — A link to a webpage is different from a direct file link. The source must permit browser access and provide a compatible file. Only save content you own or are authorised to use.</p>
+      </div>
+
+      <div id="statusArea" class="status-area" aria-live="polite" aria-atomic="true"><span class="status-dot"></span><span>Ready when you have a direct file link.</span></div>
+      <div id="results" class="results hidden"></div>
+    </section>
+
+    <section class="below-grid" aria-label="Your session">
+      <div class="panel glass">
+        <div class="panel-heading">
+          <div><div class="section-kicker">THIS SESSION</div><h3>Download queue</h3></div>
+          <span id="queueCount" class="count">0</span>
+        </div>
+        <div id="queueList" class="empty-state">Files you prepare will appear here.</div>
+      </div>
+      <div class="panel glass">
+        <div class="panel-heading">
+          <div><div class="section-kicker">ON THIS DEVICE</div><h3>Recent links</h3></div>
+          <button id="clearHistory" class="text-btn" type="button">Clear history</button>
+        </div>
+        <div id="historyList" class="empty-state">Your recently checked links will appear here.</div>
+      </div>
+    </section>
+
+    <p class="footnote">BELTAH DOWNLOADER helps prepare direct file links. It does not bypass private access, DRM or platform restrictions.</p>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> <b>BELTAH DOWNLOADER</b></span>
+    <span>Built by Beltah Tech</span>
+  </footer>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <dialog id="adminDialog" class="admin-dialog glass">
+    <form method="dialog" class="dialog-head">
+      <div><div class="section-kicker">ADMIN AREA</div><h2>Provider settings</h2></div>
+      <button class="icon-btn" aria-label="Close">×</button>
     </form>
-    <div class="provider-block"><div class="provider-label">LINK TYPES</div><div class="platforms" aria-label="Supported link types"><span class="provider-ready">↗ Direct media <b>Ready</b></span><span class="provider-fallback">▶ YouTube <b>External fallback</b></span><span class="provider-limited">◎ Instagram*</span><span class="provider-limited">♪ TikTok*</span><span class="provider-limited">𝕏 X*</span></div><p class="provider-note">YouTube links are checked by the built-in direct-file workflow first. If that cannot resolve the page, open YTDown as an external fallback. Instagram, TikTok and X extraction are not enabled.</p></div>
-    <div class="notice"><span>ⓘ</span><p>Playback uses your browser’s native media player. The source must allow access and provide a browser-compatible format. This tool does not convert files or bypass access restrictions.</p></div>
-    <div id="statusArea" class="status-area" aria-live="polite" aria-atomic="true"><span class="status-dot"></span><span>Waiting for a direct media URL</span></div>
-    <div id="results" class="results hidden"></div>
-  </section>
-  <section class="below-grid">
-    <div class="panel glass"><div class="panel-heading"><div><div class="section-kicker">SESSION</div><h3>Download queue</h3></div><span id="queueCount" class="count">0</span></div><div id="queueList" class="empty-state">Files you prepare in this session will be listed here.</div></div>
-    <div class="panel glass"><div class="panel-heading"><div><div class="section-kicker">RECENT ACTIVITY</div><h3>Search history</h3></div><button id="clearHistory" class="text-btn" type="button">Clear</button></div><div id="historyList" class="empty-state">Links you check on this device will appear here.</div></div>
-  </section>
-  <p class="footnote">Direct-file downloads are handled here. YouTube fallback opens YTDown separately. Only access and save content you own or are authorised to use.</p>
-</main>
-<footer><span>© <span id="year"></span> <b>BELTAH DOWNLOADER</b></span><span>Direct media · Native playback · Original files</span></footer>
-<div id="toast" class="toast" role="status"></div>
-<dialog id="adminDialog" class="admin-dialog glass">
-  <form method="dialog" class="dialog-head"><div><div class="section-kicker">PRIVATE SETTINGS</div><h2>Provider configuration</h2></div><button class="icon-btn" aria-label="Close">×</button></form>
-  <form id="adminLogin" class="admin-form"><p>Provider settings are restricted to the site administrator. The passcode is verified by the server.</p><label for="adminPass">ADMIN PASSCODE</label><input id="adminPass" type="password" placeholder="Enter admin passcode" required><button class="primary-btn" type="submit">Unlock settings →</button><div id="adminError" class="error-text"></div></form>
-  <div id="adminSettings" class="admin-form hidden"><label for="resolverUrl">AUTHORISED PROVIDER BASE URL</label><input id="resolverUrl" type="url" placeholder="https://your-authorized-resolver.example"><label for="resolverPath">RESOLVER PATH</label><input id="resolverPath" type="text" value="/api/resolve"><p class="muted">Provider APIs vary. Confirm the upstream request and response contract before enabling a resolver. Values are stored in this browser only; do not enter API secrets here.</p><button id="saveConfig" class="primary-btn" type="button">Save configuration</button><button id="adminLogout" class="text-btn" type="button">Lock settings</button></div>
-</dialog>
-<script src="/app.js" defer></script>
-</body></html>
+    <form id="adminLogin" class="admin-form">
+      <p>Provider settings are restricted to the site administrator. The passcode is verified by the server.</p>
+      <label for="adminPass">ADMIN PASSCODE</label>
+      <input id="adminPass" type="password" placeholder="Enter admin passcode" required>
+      <button class="primary-btn" type="submit">Unlock settings <b>→</b></button>
+      <div id="adminError" class="error-text"></div>
+    </form>
+    <div id="adminSettings" class="admin-form hidden">
+      <label for="resolverUrl">AUTHORISED PROVIDER BASE URL</label>
+      <input id="resolverUrl" type="url" placeholder="https://your-authorized-resolver.example">
+      <label for="resolverPath">RESOLVER PATH</label>
+      <input id="resolverPath" type="text" value="/api/resolve">
+      <p class="muted">Do not enter API secrets here. Provider settings are saved in this browser and do not activate an integration unless a matching server endpoint is implemented.</p>
+      <button id="saveConfig" class="primary-btn" type="button">Save configuration</button>
+      <button id="adminLogout" class="text-btn" type="button">Lock settings</button>
+    </div>
+  </dialog>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
