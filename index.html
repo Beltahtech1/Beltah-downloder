@@ -11,42 +11,39 @@
 <body>
 <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
 <header class="topbar">
-  <button id="installBtn" class="install-btn" type="button"><span>↧</span> Install Downloader</button>
   <a class="brand-mini" href="/" aria-label="Beltah Downloader home"><img src="/icons/icon.svg" alt=""><span>BELTAH <b>DOWNLOADER</b></span></a>
-  <button id="adminOpen" class="icon-btn" aria-label="Open settings" title="Admin settings">⚙</button>
+  <div class="top-actions"><button id="adminOpen" class="settings-btn" type="button">⚙ Settings</button><button id="installBtn" class="install-btn" type="button"><span>↧</span> Install app</button></div>
 </header>
 <main class="shell">
   <section class="hero">
-    <div class="eyebrow"><span class="live-dot"></span> THE MEDIA EXPERIENCE, REFINED</div>
-    <h1>Find your next<br><span>play moment.</span></h1>
-    <p class="hero-copy">A refined space to discover, preview and save media you have permission to access.</p>
-    <div class="platforms" aria-label="Supported link types">
-      <span>▶ YouTube*</span><span>◎ Instagram*</span><span>♪ TikTok*</span><span>𝕏 X*</span><span>↗ Direct links</span><span>◉ In-app streaming</span>
-    </div>
+    <div class="eyebrow"><span class="live-dot"></span> DIRECT MEDIA WORKSPACE</div>
+    <h1>Save what matters.<br><span>Keep it moving.</span></h1>
+    <p class="hero-copy">Paste a direct media link to check its format, preview playback and save the original file.</p>
   </section>
   <section class="workspace glass">
-    <div class="workspace-head"><div><div class="section-kicker">NEW DOWNLOAD</div><h2>Bring your media to life</h2></div><div id="platformBadge" class="platform-badge">Detecting platform</div></div>
+    <div class="workspace-head"><div><div class="section-kicker">START WITH A LINK</div><h2>Paste. Preview. Download.</h2></div><div id="platformBadge" class="platform-badge">Detecting platform</div></div>
     <form id="downloadForm">
       <label class="sr-only" for="mediaUrl">Media or direct file URL</label>
-      <div class="url-field"><span class="link-icon">↗</span><input id="mediaUrl" type="url" inputmode="url" placeholder="Drop a direct video, audio or file link…" autocomplete="url" required><button id="clearUrl" class="clear-btn" type="button" aria-label="Clear URL">×</button></div>
-      <div class="form-row"><div class="select-wrap"><label for="formatSelect">FORMAT</label><select id="formatSelect"><option value="auto">Auto detect</option><option value="video">Video / MP4</option><option value="audio">Audio / MP3</option><option value="original">Original file</option></select></div><button id="startBtn" class="primary-btn" type="submit"><span>Explore media</span><b>↗</b></button></div>
+      <div class="url-field"><span class="link-icon">↗</span><input id="mediaUrl" type="url" inputmode="url" placeholder="Paste a direct MP4, MP3, WebM or file URL…" autocomplete="url" required><button id="clearUrl" class="clear-btn" type="button" aria-label="Clear URL">×</button></div>
+      <div class="form-row"><div class="select-wrap"><label for="formatSelect">FORMAT</label><select id="formatSelect"><option value="auto">Auto detect</option><option value="video">Video files</option><option value="audio">Audio files</option><option value="original">Any supported file</option></select></div><button id="startBtn" class="primary-btn" type="submit"><span>Find media</span><b>↗</b></button></div>
     </form>
-    <div class="notice"><span>ⓘ</span><p>Preview and stream supported direct media links right here. Download only content you own or have permission to save. Platform links require a compatible, authorized provider.</p></div>
-    <div id="statusArea" class="status-area" aria-live="polite"><div class="idle-mark">✳</div><span>Ready when you are</span></div><div class="stream-hint"><span class="stream-pulse"></span> DIRECT PLAYBACK · NO EXTRA PLAYER REQUIRED</div>
+    <div class="provider-block"><div class="provider-label">LINK TYPES</div><div class="platforms" aria-label="Supported link types"><span class="provider-ready">↗ Direct media <b>Ready</b></span><span class="provider-limited">▶ YouTube*</span><span class="provider-limited">◎ Instagram*</span><span class="provider-limited">♪ TikTok*</span><span class="provider-limited">𝕏 X*</span></div><p class="provider-note">* A platform page is not a direct media file. These providers are shown for recognition only; extraction and in-app streaming are not enabled until an authorised integration is configured and tested.</p></div>
+    <div class="notice"><span>ⓘ</span><p>Playback uses your browser’s native media player. The source must allow access and provide a browser-compatible format. This tool does not convert files or bypass access restrictions.</p></div>
+    <div id="statusArea" class="status-area" aria-live="polite" aria-atomic="true"><span class="status-dot"></span><span>Waiting for a direct media URL</span></div>
     <div id="results" class="results hidden"></div>
   </section>
   <section class="below-grid">
-    <div class="panel glass"><div class="panel-heading"><div><div class="section-kicker">SESSION</div><h3>Download queue</h3></div><span id="queueCount" class="count">0</span></div><div id="queueList" class="empty-state">Your downloads will appear here.</div></div>
-    <div class="panel glass"><div class="panel-heading"><div><div class="section-kicker">RECENT ACTIVITY</div><h3>Search history</h3></div><button id="clearHistory" class="text-btn" type="button">Clear</button></div><div id="historyList" class="empty-state">No recent links yet.</div></div>
+    <div class="panel glass"><div class="panel-heading"><div><div class="section-kicker">SESSION</div><h3>Download queue</h3></div><span id="queueCount" class="count">0</span></div><div id="queueList" class="empty-state">Files you prepare in this session will be listed here.</div></div>
+    <div class="panel glass"><div class="panel-heading"><div><div class="section-kicker">RECENT ACTIVITY</div><h3>Search history</h3></div><button id="clearHistory" class="text-btn" type="button">Clear</button></div><div id="historyList" class="empty-state">Links you check on this device will appear here.</div></div>
   </section>
-  <p class="footnote">* Platform support depends on provider authorization and resolver configuration. BELTAH DOWNLOADER does not bypass DRM, access controls, or platform restrictions.</p>
+  <p class="footnote">Direct-link mode is active. Platform integrations are not enabled. Only access and save content you own or are authorised to use.</p>
 </main>
-<footer><span>© <span id="year"></span> BELTAH TECH</span><span>Powered by <b>Beltah Tech Team</b></span></footer>
+<footer><span>© <span id="year"></span> <b>BELTAH DOWNLOADER</b></span><span>Direct media · Native playback · Original files</span></footer>
 <div id="toast" class="toast" role="status"></div>
 <dialog id="adminDialog" class="admin-dialog glass">
-  <form method="dialog" class="dialog-head"><div><div class="section-kicker">CONTROL CENTER</div><h2>Admin configuration</h2></div><button class="icon-btn" aria-label="Close">×</button></form>
-  <form id="adminLogin" class="admin-form"><p>Authenticate to manage provider settings. The passcode is checked server-side and must be configured in Vercel.</p><label for="adminPass">ADMIN PASSCODE</label><input id="adminPass" type="password" placeholder="Enter admin passcode" required><button class="primary-btn" type="submit">Unlock settings →</button><div id="adminError" class="error-text"></div></form>
-  <div id="adminSettings" class="admin-form hidden"><label for="resolverUrl">RESOLVER SERVICE BASE URL</label><input id="resolverUrl" type="url" placeholder="https://your-authorized-resolver.example"><label for="resolverPath">RESOLVER PATH</label><input id="resolverPath" type="text" value="/api/resolve"><p class="muted">Provider APIs vary. Confirm the upstream request and response contract before enabling a resolver. Values are stored in this browser only; do not enter API secrets here.</p><button id="saveConfig" class="primary-btn" type="button">Save configuration</button><button id="adminLogout" class="text-btn" type="button">Lock settings</button></div>
+  <form method="dialog" class="dialog-head"><div><div class="section-kicker">PRIVATE SETTINGS</div><h2>Provider configuration</h2></div><button class="icon-btn" aria-label="Close">×</button></form>
+  <form id="adminLogin" class="admin-form"><p>Provider settings are restricted to the site administrator. The passcode is verified by the server.</p><label for="adminPass">ADMIN PASSCODE</label><input id="adminPass" type="password" placeholder="Enter admin passcode" required><button class="primary-btn" type="submit">Unlock settings →</button><div id="adminError" class="error-text"></div></form>
+  <div id="adminSettings" class="admin-form hidden"><label for="resolverUrl">AUTHORISED PROVIDER BASE URL</label><input id="resolverUrl" type="url" placeholder="https://your-authorized-resolver.example"><label for="resolverPath">RESOLVER PATH</label><input id="resolverPath" type="text" value="/api/resolve"><p class="muted">Provider APIs vary. Confirm the upstream request and response contract before enabling a resolver. Values are stored in this browser only; do not enter API secrets here.</p><button id="saveConfig" class="primary-btn" type="button">Save configuration</button><button id="adminLogout" class="text-btn" type="button">Lock settings</button></div>
 </dialog>
 <script src="/app.js" defer></script>
 </body></html>
