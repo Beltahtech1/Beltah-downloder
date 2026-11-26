@@ -36,7 +36,18 @@ form.addEventListener("submit",async e=>{
   }).join("");
   results.querySelectorAll("video,audio").forEach(el=>{const label=el.parentElement.querySelector(".media-state");el.addEventListener("playing",()=>{label.textContent="Streaming · playback active";setStatus("Streaming direct media in this page.",false,"success")});el.addEventListener("waiting",()=>{label.textContent="Buffering from source…";setStatus("Buffering media from source…",true)});el.addEventListener("error",()=>{label.textContent="Playback unavailable · source may block browser playback or use an unsupported codec.";setStatus("This source cannot be played in the current browser.",false,"error")});el.addEventListener("loadedmetadata",()=>{if(Number.isFinite(el.duration))label.textContent="Duration · "+Math.floor(el.duration/60)+":"+String(Math.floor(el.duration%60)).padStart(2,"0")+" · ready"})});
   items.forEach(x=>state.queue.unshift({name:x.title,status:"Ready"}));renderQueue();
- }catch(err){results.innerHTML='<div class="result-error">'+escapeHtml(err.message)+'</div>';results.classList.remove("hidden");setStatus(err.message,false,"error")}
+ }catch(err){
+  if(p==="YouTube"){
+   results.innerHTML='<div class="fallback-card"><div class="fallback-top"><span class="fallback-mark">▶</span><div><strong>Use YTDown as your YouTube fallback</strong><p>The built-in direct-file check could not resolve this YouTube page. Continue with the external provider; downloads are handled on its website.</p></div></div><div class="fallback-actions"><a class="fallback-open" href="https://app.ytdown.to/en38/" target="_blank" rel="noopener noreferrer">Open YTDown ↗</a><button class="fallback-copy" id="copyYtUrl" type="button">Copy video link</button></div><small class="fallback-note">Paste your copied YouTube link into YTDown. Beltah Downloader does not send your link to an undocumented third-party API.</small></div>';
+   const copyButton=$("#copyYtUrl");
+   copyButton?.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(url);toast("YouTube link copied. Paste it into YTDown.")}catch{toast("Copy is unavailable here. Copy the link from the address field.")}});
+   setStatus("Built-in check completed. YTDown is available as an external fallback.",false,"success");
+  }else{
+   results.innerHTML='<div class="result-error">'+escapeHtml(err.message)+'</div>';
+   setStatus(err.message,false,"error");
+  }
+  results.classList.remove("hidden");
+ }
  finally{startBtn.disabled=false;startBtn.querySelector("span").textContent="Find media"}
 });
 $("#clearHistory").onclick=()=>{state.history=[];localStorage.removeItem("beltah-history");renderHistory();toast("History cleared.")};

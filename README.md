@@ -15,7 +15,8 @@ BELTAH DOWNLOADER is a responsive direct-media workspace. Enter a direct media U
 | Direct HTTP(S) media URLs | ✅ Available | Source must expose a direct file URL and allow browser access |
 | In-page video/audio playback | ✅ Available | Browser codec and source CORS/range support apply |
 | File type and size hints | ✅ Best effort | Size is read from response headers when the source permits it |
-| YouTube / Instagram / TikTok / X | ⏳ Not enabled | Platform pages are not direct files; authorised integration required |
+| YouTube fallback | ✅ External fallback | Built-in direct-file check runs first; if it cannot resolve a YouTube page, users can open YTDown in a separate tab and paste the link |
+| Instagram / TikTok / X | ⏳ Not enabled | Platform pages are not direct files; authorised integration required |
 | Format conversion | ⛔ Not available | The app previews/downloads original files; it does not transcode |
 | PWA install | ✅ Available | Supported browsers can install the web app |
 
@@ -43,7 +44,7 @@ Open http://localhost:8000.
 3. Add `ADMIN_PASSCODE` as a Vercel environment variable.
 4. Redeploy after changing environment variables.
 
-Never commit the administrator passcode or API secrets. Resolver values in the settings dialog are stored locally in the current browser and do not activate a backend provider by themselves.
+Never commit the administrator passcode or API secrets. Resolver values in the settings dialog are stored locally in the current browser and do not activate a backend provider by themselves. The YTDown fallback opens its website in a separate tab; no undocumented YTDown API or iframe integration is used.
 
 ## Custom domain
 
@@ -51,7 +52,7 @@ The production site currently uses the Vercel domain. To attach a branded domain
 
 ## Responsible use
 
-Use the service only for media you own or are authorised to access. It does not bypass DRM, logins, paywalls, geographic restrictions or other platform controls.
+Use the service only for media you own or are authorised to access. It does not bypass DRM, logins, paywalls, geographic restrictions or other platform controls. YTDown is an independent external service and is not affiliated with YouTube.
 
 ---
 

@@ -121,3 +121,19 @@ footer{max-width:1120px;border-color:rgba(166,179,222,.1);padding-top:24px;paddi
 footer{gap:14px}.dialog-head h2{font-size:22px}
 @media(max-width:640px){.topbar{height:68px;padding:0 13px}.brand-mini{font-size:10px;gap:7px}.brand-mini img{width:31px;height:31px}.top-actions{gap:6px}.settings-btn{padding:9px 10px;font-size:10px}.install-btn{font-size:10px;padding:9px 10px}.shell{margin-top:10px;width:calc(100% - 22px)}.hero{padding:15px 0 17px}.hero h1{font-size:clamp(31px,9vw,45px);letter-spacing:-1.6px}.hero-copy{font-size:12px;line-height:1.6}.workspace{padding:20px 15px;border-radius:22px}.workspace h2{font-size:21px}.workspace-head{align-items:flex-start;gap:8px}.platform-badge{font-size:9px;max-width:112px}.url-field{height:60px}.url-field input{font-size:12px}.form-row{gap:11px}.primary-btn{width:100%;min-width:0}.provider-block{margin-top:17px}.platforms{gap:6px}.platforms span{padding:7px 9px;font-size:9px}footer{flex-wrap:wrap;justify-content:center;text-align:center}}
 @media(prefers-reduced-motion:reduce){.loading-skeleton{animation:none;background:#1b2740}.status-area.loading .status-dot{animation:none}}
+
+/* External provider fallback */
+.fallback-card{padding:18px;border:1px solid rgba(154,140,255,.28);border-radius:16px;background:linear-gradient(135deg,rgba(43,37,88,.42),rgba(15,28,47,.82));box-shadow:0 12px 32px #0003}
+.fallback-top{display:flex;align-items:flex-start;gap:13px}
+.fallback-mark{width:42px;height:42px;display:grid;place-items:center;flex:0 0 auto;border-radius:13px;background:linear-gradient(135deg,#6958d8,#328b9a);font-size:17px;color:white}
+.fallback-top strong{display:block;font:600 15px "Space Grotesk";color:#f4f3ff}
+.fallback-top p{margin:7px 0 0;color:#aeb9d1;font-size:11px;line-height:1.65}
+.fallback-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.fallback-open,.fallback-copy{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:11px 15px;border-radius:11px;font:700 11px "DM Sans";cursor:pointer;text-decoration:none}
+.fallback-open{color:#fff;background:linear-gradient(105deg,#7865ed,#398f9c);box-shadow:0 8px 22px #655bd533}
+.fallback-copy{color:#dce2f5;background:#ffffff09;border:1px solid var(--line)}
+.fallback-open:hover,.fallback-copy:hover{transform:translateY(-2px)}
+.fallback-note{display:block;margin-top:13px;color:#7f8da9;font-size:9px;line-height:1.6}
+@media(max-width:640px){.fallback-card{padding:15px}.fallback-actions>*{flex:1}.fallback-top strong{font-size:13px}}
+
+.platforms .provider-fallback{color:#e5ddff;background:rgba(103,83,199,.18);border:1px solid rgba(166,145,255,.3)}.provider-fallback b{font-size:9px;margin-left:5px;color:#b5a6ff}
