@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#090d18"><meta name="description" content="BELTAH DOWNLOADER — a clean, fast media link and file downloader by Beltah Tech Team.">
+  <meta name="theme-color" content="#080b16"><meta name="description" content="BELTAH DOWNLOADER — a clean, fast media link and file downloader by Beltah Tech Team.">
   <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="manifest" href="/manifest.json"><link rel="icon" href="/icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icons/icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -17,22 +17,22 @@
 </header>
 <main class="shell">
   <section class="hero">
-    <div class="eyebrow"><span class="live-dot"></span> MULTI-PLATFORM DOWNLOAD WORKSPACE</div>
-    <h1>Save what matters.<br><span>Keep it moving.</span></h1>
-    <p class="hero-copy">A simple workspace for downloading direct media files and connecting approved media providers.</p>
+    <div class="eyebrow"><span class="live-dot"></span> THE MEDIA EXPERIENCE, REFINED</div>
+    <h1>Find your next<br><span>play moment.</span></h1>
+    <p class="hero-copy">A refined space to discover, preview and save media you have permission to access.</p>
     <div class="platforms" aria-label="Supported link types">
-      <span>▶ YouTube*</span><span>◎ Instagram*</span><span>♪ TikTok*</span><span>𝕏 X*</span><span>↗ Direct links</span>
+      <span>▶ YouTube*</span><span>◎ Instagram*</span><span>♪ TikTok*</span><span>𝕏 X*</span><span>↗ Direct links</span><span>◉ In-app streaming</span>
     </div>
   </section>
   <section class="workspace glass">
-    <div class="workspace-head"><div><div class="section-kicker">NEW DOWNLOAD</div><h2>Paste a media link</h2></div><div id="platformBadge" class="platform-badge">Detecting platform</div></div>
+    <div class="workspace-head"><div><div class="section-kicker">NEW DOWNLOAD</div><h2>Bring your media to life</h2></div><div id="platformBadge" class="platform-badge">Detecting platform</div></div>
     <form id="downloadForm">
       <label class="sr-only" for="mediaUrl">Media or direct file URL</label>
-      <div class="url-field"><span class="link-icon">↗</span><input id="mediaUrl" type="url" inputmode="url" placeholder="Paste a video, audio or direct file URL…" autocomplete="url" required><button id="clearUrl" class="clear-btn" type="button" aria-label="Clear URL">×</button></div>
-      <div class="form-row"><div class="select-wrap"><label for="formatSelect">FORMAT</label><select id="formatSelect"><option value="auto">Auto detect</option><option value="video">Video / MP4</option><option value="audio">Audio / MP3</option><option value="original">Original file</option></select></div><button id="startBtn" class="primary-btn" type="submit"><span>Find media</span><b>→</b></button></div>
+      <div class="url-field"><span class="link-icon">↗</span><input id="mediaUrl" type="url" inputmode="url" placeholder="Drop a direct video, audio or file link…" autocomplete="url" required><button id="clearUrl" class="clear-btn" type="button" aria-label="Clear URL">×</button></div>
+      <div class="form-row"><div class="select-wrap"><label for="formatSelect">FORMAT</label><select id="formatSelect"><option value="auto">Auto detect</option><option value="video">Video / MP4</option><option value="audio">Audio / MP3</option><option value="original">Original file</option></select></div><button id="startBtn" class="primary-btn" type="submit"><span>Explore media</span><b>↗</b></button></div>
     </form>
-    <div class="notice"><span>ⓘ</span><p>Only download files you own or have permission to save. Platform extraction requires a compatible, authorized resolver service. Direct file links can be downloaded here.</p></div>
-    <div id="statusArea" class="status-area" aria-live="polite"><div class="idle-mark">✳</div><span>Ready when you are</span></div>
+    <div class="notice"><span>ⓘ</span><p>Preview and stream supported direct media links right here. Download only content you own or have permission to save. Platform links require a compatible, authorized provider.</p></div>
+    <div id="statusArea" class="status-area" aria-live="polite"><div class="idle-mark">✳</div><span>Ready when you are</span></div><div class="stream-hint"><span class="stream-pulse"></span> DIRECT PLAYBACK · NO EXTRA PLAYER REQUIRED</div>
     <div id="results" class="results hidden"></div>
   </section>
   <section class="below-grid">
