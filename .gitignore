@@ -1,0 +1,11 @@
+node_modules/
+.vercel/
+
+# Local secrets and environment files — never commit real credentials
+.env
+.env.*
+!.env.example
+.secrets/
+secrets/
+*.pem
+*.key
