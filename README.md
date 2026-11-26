@@ -1,47 +1,108 @@
 # BELTAH DOWNLOADER
 
-A responsive, installable PWA by **Beltah Tech Team**, prepared for Vercel deployment.
+<p align="center">
+  <strong>⚡ A clean, responsive media-link workspace by Beltah Tech Team</strong><br>
+  <a href="https://beltah-downloder.vercel.app">🌐 Open the website</a> ·
+  <a href="https://github.com/Beltahtech1/Beltah-downloder">💻 GitHub repository</a>
+</p>
 
-## Current functionality
+<p align="center">
+  <img alt="Status" src="https://img.shields.io/badge/status-active%20development-7c6cff">
+  <img alt="Hosting" src="https://img.shields.io/badge/hosting-Vercel-black?logo=vercel">
+  <img alt="PWA" src="https://img.shields.io/badge/PWA-installable-20b486">
+  <img alt="License" src="https://img.shields.io/badge/license-BSD--2--Clause-blue">
+</p>
 
-- Responsive dark/glass UI for mobile and desktop.
-- Platform/link detection and URL validation.
-- Direct media/file link downloads (MP4, MP3, WebM, PDF, ZIP, images and more).
-- Recent link history and session queue.
-- PWA manifest, service worker, SVG app icon and install guidance.
-- Admin UI gate backed by a server-side environment variable.
-- Vercel-ready static hosting and serverless API route.
+## 🖥️ Interface preview
 
-## Important resolver status
+![BELTAH DOWNLOADER interface preview](docs/preview.svg)
 
-The repository originally contained only a license and a one-line README. The resolver URL mentioned during planning (`https://ytv.xcasper.space`) did not have a verifiable public API contract available during implementation. Therefore, platform extraction is deliberately **not represented as working** and no undocumented endpoint or response format has been guessed. Configure a provider only after obtaining its documented API request/response schema and confirming that its use is authorized. Do not use this application to bypass DRM, access controls, or platform restrictions.
+> This is an illustrated preview of the current interface layout, not a screenshot captured from a live browser.
 
-The current app downloads direct HTTP(S) media/file URLs. Many platforms provide webpage URLs rather than direct media files; those need a compatible authorized resolver/backend.
+## ✨ Features
 
-## Deploy to Vercel
+| Icon | Feature | Description |
+|---|---|---|
+| 🔗 | Link detection | Recognises common media platform domains and direct links. |
+| 📥 | Direct file downloads | Supports direct HTTP(S) file URLs such as MP4, MP3, WebM, PDF, ZIP and images. |
+| 🧾 | Recent history | Keeps a small list of recent links in the current browser. |
+| 📋 | Download queue | Shows links/files prepared during the current session. |
+| 📱 | Responsive layout | Designed for mobile screens, tablets and desktop browsers. |
+| 🚀 | PWA installation | Install the web app on supported Android and desktop browsers. |
+| ⚙️ | Admin settings | Passcode check is performed by a Vercel serverless endpoint; resolver settings are saved locally in the browser. |
+| 🛡️ | Safer defaults | Accepts HTTP(S) URLs and does not attempt to bypass DRM or access restrictions. |
 
-1. Import this GitHub repository into Vercel.
-2. Framework preset: **Other**. Build command: leave blank. Output directory: `.`.
-3. Add the environment variable `ADMIN_PASSCODE` with the admin passcode you choose (set the planned passcode privately in Vercel; do not commit it).
-4. Deploy. No build step or package installation is required.
+## 📌 Download support status
 
-## PWA installation
+**Working now:** direct links that point to downloadable files. The remote host must allow the browser to fetch the file; cross-origin restrictions can affect some sources.
 
-- Android/desktop Chromium: open the deployed HTTPS site and choose **Install app** or **Add to Home Screen**.
-- iPhone/iPad: open in Safari → Share → **Add to Home Screen**.
-- The service worker caches the app shell. API routes are intentionally not cached.
+**Not enabled by default:** extracting media from YouTube, Instagram, TikTok, Facebook, X or other platform webpage links. Those pages are not direct media files. A compatible, documented and authorised resolver/backend must be integrated and tested before platform extraction can be advertised as working.
 
-## Admin configuration
+The project does not assume an undocumented API contract for `ytv.xcasper.space` or any public resolver. Use only content you own or have permission to download. Do not bypass DRM, access controls or platform restrictions.
 
-The admin dialog uses `/api/admin-auth` and checks `ADMIN_PASSCODE` on the server. Resolver URL/path settings currently save to the current browser only; they do not store secrets and do not activate an undocumented provider integration. The current UI unlock acknowledgement is not an authorization token for privileged backend operations.
+## 🧰 Tech stack
 
-## Release links
+- HTML5, CSS3 and vanilla JavaScript
+- Web App Manifest + Service Worker
+- Vercel static hosting and serverless function
+- Browser localStorage for non-sensitive history and UI preferences
 
-No APK, EXE, MSI, DMG, AppImage or DEB is fabricated by this web project. Publish real signed installers through GitHub Releases when native desktop/mobile builds exist.
+## 🚀 Deploy to Vercel
 
-## Local preview
+1. Import this repository into your Vercel account.
+2. Choose **Other** as the framework preset.
+3. Leave the build command empty.
+4. Set the output directory to `.`.
+5. Add `ADMIN_PASSCODE` under **Project → Settings → Environment Variables**.
+6. Redeploy after saving the environment variable.
 
-Serve this folder using any static HTTP server. PWA service workers require localhost or HTTPS.
+🔐 **Important:** choose a new, unique passcode and keep it only in Vercel Environment Variables. Never commit it to GitHub or paste it into client-side JavaScript.
+
+## 📲 Install the app
+
+- **Android / Chrome:** open the HTTPS website, then use the browser's **Install app** or **Add to Home Screen** option.
+- **Desktop Chromium browsers:** use the install icon in the address bar or browser menu.
+- **iPhone / iPad:** open the website in Safari → **Share** → **Add to Home Screen**.
+
+The service worker caches the application shell. API routes are excluded from caching.
+
+## ⚙️ Admin configuration notes
+
+The admin panel checks the configured passcode through `/api/admin-auth`. Resolver URL and path values are saved only in that browser's local storage. They do not configure a server-side provider, store API secrets, or authorise privileged backend operations. A resolver must be implemented against its provider's documented request and response schema before it can be used.
+
+## 🗂️ Project structure
+
+```text
+.
+├── api/
+│   └── admin-auth.js
+├── docs/
+│   └── preview.svg
+├── icons/
+│   └── icon.svg
+├── app.js
+├── index.html
+├── manifest.json
+├── styles.css
+├── sw.js
+├── vercel.json
+└── README.md
+```
+
+## 🧪 Local preview
+
+Run a local static server from the project directory, then open its localhost URL. For example:
+
+```bash
+python -m http.server 8000
+```
+
+Open `http://localhost:8000`. Service workers and PWA installation require localhost or HTTPS.
+
+## 📦 Native installer status
+
+This repository is a Progressive Web App. It does not currently contain genuine signed APK, EXE, MSI, DMG, AppImage or DEB installers. Do not rename text instructions as installer packages; publish real builds through GitHub Releases only when native packages have been produced and tested.
 
 ---
-© 2026 Beltah Tech. BSD 2-Clause License.
+
+<p align="center">Made with 💜 by <strong>Beltah Tech Team</strong></p>
