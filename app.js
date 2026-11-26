@@ -3,10 +3,11 @@
   const $ = (id) => document.getElementById(id);
   const STORAGE_KEY = "beltah_downloader_config_v1";
   const HISTORY_KEY = "beltah_downloader_history_v1";
-  const DEFAULT_CONFIG = { primaryApi: "", fallbackApi: "", releases: { android: "", windows: "", macos: "", linux: "" } };
+  const SILVATECHS_API = "https://downloader.silvatechs.com/api/public/download";
+  const DEFAULT_CONFIG = { releases: { android: "", windows: "", macos: "", linux: "" } };
   const readJson = (key, fallback) => { try { const value = JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch { return fallback; } };
   const state = {
-    config: (() => { const v = readJson(STORAGE_KEY, {}); return { ...DEFAULT_CONFIG, ...v, releases: { ...DEFAULT_CONFIG.releases, ...(v.releases || {}) } }; })(),
+    config: (() => { const v = readJson(STORAGE_KEY, {}); return { releases: { ...DEFAULT_CONFIG.releases, ...(v.releases || {}) } }; })(),
     history: readJson(HISTORY_KEY, []),
     queue: [],
     searchController: null,
@@ -149,21 +150,75 @@
     const note = document.createElement("p"); note.className = "text-xs text-slate-400"; note.textContent = "This opens an external service. Beltah Downloader does not extract YouTube streams itself.";
     card.append(title, note, copy, open); grid.append(card); $("resultsSection").classList.remove("hidden");
   }
+  function collectDownloadCandidates(value, output = [], seen = new Set()) {
+    if (!value || typeof value !== "object" || seen.has(value)) return output;
+    seen.add(value);
+    if (Array.isArray(value)) { value.forEach(item => collectDownloadCandidates(item, output, seen)); return output; }
+    const preferredKeys = ["downloadUrl","download_url","downloadLink","download_link","directUrl","direct_url","url","link","src","file"];
+    for (const key of preferredKeys) {
+      const candidate = value[key];
+      if (typeof candidate === "string" && safeUrl(candidate)) {
+        const format = String(value.format || value.ext || value.type || "").toLowerCase();
+        output.push({ url: safeUrl(candidate), format, title: value.title || value.name || value.filename || "" });
+      } else if (candidate && typeof candidate === "object") collectDownloadCandidates(candidate, output, seen);
+    }
+    Object.entries(value).forEach(([key, child]) => {
+      if (!preferredKeys.includes(key) && child && typeof child === "object") collectDownloadCandidates(child, output, seen);
+    });
+    return output;
+  }
   async function runSearch(raw) {
-    const query = raw.trim(); if (!query) { setStatus("Paste a direct media or file URL first.", "error"); return; }
+    const query = raw.trim();
+    if (!query) { setStatus("Enter a search term or paste a media URL.", "error"); return; }
     state.lastQuery = query; saveHistory(query); state.searchController?.abort(); state.searchController = new AbortController();
     $("resultsSection").classList.add("hidden"); showLoading(query);
-    const url = safeUrl(query);
-    if (!url) { setStatus("Enter a complete HTTP or HTTPS URL.", "error"); return; }
-    const platform = detectPlatform(query);
-    if (platform === "YouTube") { $("statusPanel").classList.add("hidden"); showYoutubeFallback(url); setStatus("YouTube links use the external option shown below.", "success"); return; }
-    if (platform !== "Direct URL") { setStatus(platform + " page extraction is not configured. Paste a direct file URL from a source you are authorised to access.", "error"); return; }
+    const sourceUrl = safeUrl(query);
+    const format = $("downloadFormat")?.value === "mp3" ? "mp3" : "mp4";
+    const endpoint = new URL(SILVATECHS_API);
+    endpoint.searchParams.set(sourceUrl ? "url" : "q", query);
+    endpoint.searchParams.set("format", format);
     try {
-      const item = await inspectDirectUrl(url, state.searchController.signal);
-      $("statusPanel").classList.add("hidden"); renderResult(item); setStatus("Direct file identified. Choose Download file to save it.", "success");
+      const response = await fetch(endpoint.toString(), {
+        method: "GET", mode: "cors", credentials: "omit",
+        headers: { "Accept": "application/json, audio/*, video/*, application/octet-stream" },
+        signal: state.searchController.signal
+      });
+      if (!response.ok) {
+        let detail = "";
+        try { const errorData = await response.clone().json(); detail = errorData.message || errorData.error || ""; } catch {}
+        throw new Error(detail || "SilvaTech returned HTTP " + response.status + ".");
+      }
+      const contentType = response.headers.get("content-type") || "";
+      if (/^(audio|video)\//i.test(contentType) || /application\/(octet-stream|force-download)/i.test(contentType)) {
+        const blob = await response.blob();
+        const mediaUrl = URL.createObjectURL(blob);
+        const item = { title: query.split("/").pop().slice(0,90) || "silvatechs-media", url: mediaUrl, mime: contentType.split(";")[0], size: blob.size, kind: mediaType("download." + format, contentType) };
+        $("statusPanel").classList.add("hidden"); renderResult(item); setStatus("SilvaTech prepared your " + format.toUpperCase() + " file.", "success"); return;
+      }
+      const rawBody = await response.text();
+      let payload;
+      try { payload = JSON.parse(rawBody); } catch {
+        const plainUrl = safeUrl(rawBody.trim());
+        if (plainUrl) payload = { url: plainUrl };
+        else throw new Error("SilvaTech returned an unrecognised response. Check its API response format.");
+      }
+      if (payload?.success === false || payload?.status === "error") {
+        throw new Error(payload.message || payload.error || "SilvaTech could not process this request.");
+      }
+      const candidates = collectDownloadCandidates(payload);
+      const selected = candidates.find(item => item.format.includes(format)) ||
+        candidates.find(item => new RegExp("\\." + format + "(?:$|[?#])","i").test(item.url)) || candidates[0];
+      if (!selected) {
+        const message = payload?.message || payload?.error || "No downloadable file was returned by SilvaTech.";
+        throw new Error(message);
+      }
+      const title = selected.title || payload.title || payload.data?.title || "silvatechs-" + format;
+      const item = { title, url: selected.url, mime: format === "mp3" ? "audio/mpeg" : "video/mp4", size: Number(payload.size || payload.data?.size || 0), kind: format === "mp3" ? "audio" : "video" };
+      $("statusPanel").classList.add("hidden"); renderResult(item);
+      setStatus("SilvaTech found your " + format.toUpperCase() + " download. Choose Download file to save it.", "success");
     } catch (err) {
       if (err.name === "AbortError") return;
-      setStatus(err.message || "Could not inspect this URL.", "error");
+      setStatus(err.message || "SilvaTech could not process this request.", "error");
     }
   }
   async function startDownload(item) {
@@ -205,10 +260,9 @@
     entries.forEach(([id,key,label]) => { const el = $(id); if (!el) return; const url = safeUrl(state.config.releases[key]); if (url) { el.href = url; el.textContent = label; el.classList.remove("opacity-50","pointer-events-none"); } else { el.href = "#"; el.textContent = label + " (Not configured)"; el.classList.add("opacity-50","pointer-events-none"); } });
   }
   function fillConfigForm() {
-    $("cfgPrimaryApi").value = state.config.primaryApi || ""; $("cfgFallbackApi").value = state.config.fallbackApi || "";
     $("cfgAndroidUrl").value = state.config.releases.android || ""; $("cfgWindowsUrl").value = state.config.releases.windows || "";
     $("cfgMacosUrl").value = state.config.releases.macos || ""; $("cfgLinuxUrl").value = state.config.releases.linux || "";
-    $("diagnosticsBox").textContent = "Device: " + detectOS() + " | Online: " + navigator.onLine + " | History: " + state.history.length + " | Queue: " + state.queue.length + " | Resolver: not connected";
+    $("diagnosticsBox").textContent = "Device: " + detectOS() + " | Online: " + navigator.onLine + " | History: " + state.history.length + " | Queue: " + state.queue.length + " | Resolver: SilvaTech public API";
   }
   function validOptionalUrl(value, label) { if (!value.trim()) return ""; const url = safeUrl(value.trim()); if (!url) throw new Error(label + " must be a valid HTTP/HTTPS URL."); return url; }
   async function unlockAdmin(event) {
@@ -223,11 +277,11 @@
   }
   function saveConfig() {
     try {
-      state.config = { primaryApi: validOptionalUrl($("cfgPrimaryApi").value, "Primary endpoint"), fallbackApi: validOptionalUrl($("cfgFallbackApi").value, "Fallback endpoint"), releases: {
+      state.config = { releases: {
         android: validOptionalUrl($("cfgAndroidUrl").value, "Android URL"), windows: validOptionalUrl($("cfgWindowsUrl").value, "Windows URL"),
         macos: validOptionalUrl($("cfgMacosUrl").value, "macOS URL"), linux: validOptionalUrl($("cfgLinuxUrl").value, "Linux URL")
       }};
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.config)); syncReleaseLinks(); fillConfigForm(); toast("Configuration saved on this device. Resolver is not active until integrated.");
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.config)); syncReleaseLinks(); fillConfigForm(); toast("Release links saved on this device. SilvaTech is the only resolver.");
     } catch (err) { toast(err.message); }
   }
   function exportConfig() {
@@ -236,7 +290,7 @@
   }
   async function importConfig(event) {
     const file = event.target.files?.[0]; if (!file) return;
-    try { const parsed = JSON.parse(await file.text()); state.config = { ...DEFAULT_CONFIG, ...parsed, releases: { ...DEFAULT_CONFIG.releases, ...(parsed.releases || {}) }}; fillConfigForm(); saveConfig(); }
+    try { const parsed = JSON.parse(await file.text()); state.config = { releases: { ...DEFAULT_CONFIG.releases, ...(parsed.releases || {}) }}; fillConfigForm(); saveConfig(); }
     catch { toast("Invalid configuration JSON."); } finally { event.target.value = ""; }
   }
   function clearHistory() { state.history = []; localStorage.removeItem(HISTORY_KEY); renderHistory(); toast("History cleared."); }
