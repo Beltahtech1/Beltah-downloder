@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "BELTAH DOWNLOADER",
-  "short_name": "BELTAH",
-  "description": "Preview and save supported direct media links in one clean workspace.",
+  "name": "Beltah Tech Searching Engine",
+  "short_name": "Beltah Tech",
+  "description": "Welcome to Beltah Tech Searching Engine — search, preview and download supported media in MP4 or MP3.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

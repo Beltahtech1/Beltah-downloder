@@ -175,7 +175,7 @@
     const grid = $("resultsGrid"); grid.replaceChildren();
     const card = document.createElement("article"); card.className = "glass rounded-3xl border border-slate-700/70 bg-slate-950/70 p-4 sm:p-5 space-y-4 shadow-xl shadow-black/20";
     const header = document.createElement("div"); header.className = "flex items-start gap-3";
-    const icon = document.createElement("div"); icon.className = "h-11 w-11 shrink-0 rounded-2xl bg-gradient-to-br from-sky-400/20 to-indigo-500/20 border border-sky-400/20 flex items-center justify-center text-sky-300 text-lg"; icon.textContent = item.format === "mp3" ? "♫" : "▶";
+    const icon = document.createElement("div"); icon.className = "h-12 w-12 shrink-0 rounded-2xl bg-gradient-to-br from-sky-400/20 to-indigo-500/20 border border-sky-400/30 flex items-center justify-center text-sky-200 shadow-lg shadow-sky-950/30"; icon.setAttribute("aria-hidden","true"); icon.innerHTML = '<svg viewBox="0 0 48 48" class="w-8 h-8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 5.5h15l9 9V41a2.5 2.5 0 0 1-2.5 2.5h-21A2.5 2.5 0 0 1 11 41V8a2.5 2.5 0 0 1 2-2.5Z" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M28 6v10h9" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 21v13m0 0-5-5m5 5 5-5" stroke="#67E8F9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 39h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>';
     const titleWrap = document.createElement("div"); titleWrap.className = "min-w-0 flex-1";
     const eyebrow = document.createElement("div"); eyebrow.className = "text-[10px] uppercase tracking-[.18em] text-emerald-300 font-bold"; eyebrow.textContent = "BELTAH TECH FOUND";
     const heading = document.createElement("div"); heading.className = "mt-1 font-bold text-white break-words"; heading.textContent = item.title;
@@ -205,7 +205,7 @@
     });
     card.append(optionsTitle, options);
     const actions = document.createElement("div"); actions.className = "grid grid-cols-1 sm:grid-cols-2 gap-2";
-    const download = document.createElement("button"); download.type = "button"; download.className = "px-4 py-3 rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 text-slate-950 font-extrabold text-sm shadow-lg shadow-sky-500/15"; download.textContent = "Download " + (item.format === "mp3" ? "Audio" : "Video");
+    const download = document.createElement("button"); download.type = "button"; download.className = "px-4 py-3 rounded-xl bg-gradient-to-r from-sky-400 to-indigo-500 text-slate-950 font-extrabold text-sm shadow-lg shadow-sky-500/15"; download.textContent = "↓  Download file";
     download.addEventListener("click", () => startDownload(item));
     const another = document.createElement("button"); another.type = "button"; another.className = "px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-100 font-semibold text-sm"; another.textContent = "＋ Download another file";
     another.addEventListener("click", () => {
@@ -263,7 +263,7 @@
         const blob = await response.blob();
         const mediaUrl = URL.createObjectURL(blob);
         const item = { title: query.split("/").pop().slice(0,90) || "beltah-media", url: mediaUrl, mime: contentType.split(";")[0], size: blob.size, kind: mediaType("download." + format, contentType), format, query };
-        finishSearchProgress(); renderResult(item); return;
+        finishSearchProgress(); setStatus("Beltah Tech found your " + (format === "mp3" ? "MP3 audio" : "MP4 download") + ". Choose Download file to save it.", "success"); renderResult(item); return;
       }
       const rawBody = await response.text();
       let payload;
@@ -399,5 +399,46 @@
   document.addEventListener("keydown", e => { if (e.key === "/" && !["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName)) { e.preventDefault(); $("queryInput").focus(); } if (e.key === "Escape") { closeDrawer(); closeSettings(); } });
   $("year").textContent = String(new Date().getFullYear());
   renderHistory(); renderQueue(); syncReleaseLinks(); updateBadge();
-  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+  // Branded launch screen: hold for three seconds, then reveal the workspace.
+  const launchSplash = $("launchSplash");
+  if (launchSplash) window.setTimeout(() => {
+    launchSplash.classList.add("launch-splash-hide");
+    window.setTimeout(() => launchSplash.remove(), 500);
+  }, 3000);
+
+  // Installed PWA update handling: detect a new service worker and offer a one-tap refresh.
+  if ("serviceWorker" in navigator) {
+    let isReloadingForUpdate = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (isReloadingForUpdate) return;
+      isReloadingForUpdate = true;
+      window.location.reload();
+    });
+    const revealUpdateBanner = () => $("appUpdateBanner")?.classList.remove("hidden");
+    window.addEventListener("load", async () => {
+      try {
+        const registration = await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
+        await registration.update();
+        if (registration.waiting && navigator.serviceWorker.controller) revealUpdateBanner();
+        registration.addEventListener("updatefound", () => {
+          const worker = registration.installing;
+          if (!worker) return;
+          worker.addEventListener("statechange", () => {
+            if (worker.state === "installed" && navigator.serviceWorker.controller) revealUpdateBanner();
+          });
+        });
+        $("applyAppUpdateBtn")?.addEventListener("click", async () => {
+          try {
+            await registration.update();
+            if (registration.waiting) registration.waiting.postMessage({ type: "SKIP_WAITING" });
+            else toast("No new update is available right now.");
+          } catch (error) {
+            toast("Could not check for updates. Please try again.");
+          }
+        });
+      } catch (error) {
+        console.warn("Beltah Tech update check failed:", error);
+      }
+    });
+  }
 })();

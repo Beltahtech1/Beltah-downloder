@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#090d16">
-  <meta name="description" content="BELTAH DOWNLOADER by Beltah Tech — a multi-format direct media downloader with live transfer progress, queue and history.">
+  <meta name="description" content="Welcome to Beltah Tech Searching Engine — search, preview and download supported media in MP4 or MP3.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
   <script src="https://cdn.tailwindcss.com"></script>
-  <title>BELTAH DOWNLOADER — Media Studio</title>
+  <title>Beltah Tech Searching Engine</title>
   <style>
     body {
       background-color: #080c16;
@@ -58,6 +58,21 @@
   </style>
 </head>
 <body class="antialiased min-h-screen selection:bg-sky-500/30 selection:text-sky-200">
+  <div id="launchSplash" class="launch-splash" role="status" aria-label="Welcome to Beltah Tech Searching Engine">
+    <div class="launch-splash-content">
+      <div class="launch-brand-icon">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M13 5.5h15l9 9V41a2.5 2.5 0 0 1-2.5 2.5h-21A2.5 2.5 0 0 1 11 41V8a2.5 2.5 0 0 1 2-2.5Z" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M28 6v10h9" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 21v13m0 0-5-5m5 5 5-5" stroke="#67E8F9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 39h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="launch-kicker">BELTAH TECH</div>
+      <h1>Welcome to <span>Beltah Tech</span><br>Searching Engine</h1>
+      <p>Find your media. Choose your format. Download with ease.</p>
+      <div class="launch-loader"><span></span></div>
+    </div>
+  </div>
+  <div id="appUpdateBanner" class="app-update-banner hidden" role="status">
+    <span><strong>Beltah Tech update available</strong><small>A newer version is ready to install.</small></span>
+    <button id="applyAppUpdateBtn" type="button">Update now</button>
+  </div>
   <div id="app" class="max-w-3xl mx-auto px-4 sm:px-6 py-4 space-y-5">
     
     <!-- Top Bar matching screenshot -->
